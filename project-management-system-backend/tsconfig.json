@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    /* Project Structure */
+    "rootDir": "./src",
+    "outDir": "./dist",
+
+    /* Module System */
+    "module": "commonjs",
+    "target": "es2019",
+
+    /* Node Support */
+    "lib": ["es2019"],
+    "types": ["node"],
+    "esModuleInterop": true,
+
+    /* Strictness */
+    "strict": true,
+    "skipLibCheck": true,
+
+    /* Source Maps */
+    "sourceMap": true
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
+}
