@@ -1,130 +1,104 @@
-import { Surah } from "./project.model";
+import httpStatus from "http-status";
 
-import { ParsedQs } from "qs";
+ 
 
-type SurahQuery = {
-  page?: string;
-  limit?: string;
+import { IProject } from "./project.interface";
+import { Project } from "./project.model";
+import { AppError } from "../../errors/AppError";
+
+// CREATE PROJECT
+const createProject = async (payload: IProject) => {
+  const result = await Project.create(payload);
+
+  return result;
 };
 
-const getAllSurahs = async (query: SurahQuery) => {
-  const page = Number(query.page) || 1;
-  const limit = Number(query.limit) || 12;
-  const skip = (page - 1) * limit;
+// GET ALL PROJECTS
+const getAllProjects = async () => {
+  const result = await Project.find({})
+    .populate("createdBy", "name email")
+    .populate("projectManager", "name email")
+    .populate("members", "name email avatar")
+    .sort({ createdAt: -1 });
 
-  const total = await Surah.countDocuments();
-
-  const data = await Surah.find(
-    {},
-    {
-      _id: 0,
-      id: 1,
-      name: 1,
-      transliteration: 1,
-      total_verses: 1,
-      type: 1,
-    }
-  )
-    .sort({ id: 1 })
-    .skip(skip)
-    .limit(limit);
-
-  return {
-    data,
-    meta: {
-      page,
-      limit,
-      total,
-      totalPages: Math.ceil(total / limit),
-    },
-  };
+  return result;
 };
 
-//  Get Single Surah
-const getSingleSurah = async (
-  id: number,
-  query: { page?: string; limit?: string }
-) => {
-  const page = Number(query.page) || 1;
-  const limit = Number(query.limit) || 10;
-
-  const result = await Surah.findOne({ id }, { _id: 0, __v: 0 }).lean();
+// GET SINGLE PROJECT
+const getSingleProject = async (id: string) => {
+  const result = await Project.findById(id)
+    .populate("createdBy", "name email")
+    .populate("projectManager", "name email")
+    .populate("members", "name email avatar");
 
   if (!result) {
-    throw new Error("Surah not found");
+    throw new AppError(
+      httpStatus.NOT_FOUND,
+      "Project not found"
+    );
   }
 
-  const totalVerses = result.verses.length;
-  const totalPages = Math.ceil(totalVerses / limit);
-  const start = (page - 1) * limit;
-  const end = start + limit;
-
-  return {
-    id: result.id,
-    name: result.name,
-    transliteration: result.transliteration,
-    total_verses: result.total_verses,
-    type: result.type,
-    translation: result.translation,
-    verses: result.verses.slice(start, end),
-    meta: {
-      page,
-      limit,
-      totalVerses,
-      totalPages,
-    },
-  };
+  return result;
 };
 
-const searchAyah = async (query: string, surahId?: number): Promise<any[]> => {
-  if (!query?.trim()) return [];
+// UPDATE PROJECT
+const updateProject = async (
+  id: string,
+  payload: Partial<IProject>
+) => {
+  const isProjectExists = await Project.findById(id);
 
-  const filter: any = {
-    $text: { $search: query },
-  };
-
-  if (surahId) {
-    filter.id = surahId;
+  if (!isProjectExists) {
+    throw new AppError(
+      httpStatus.NOT_FOUND,
+      "Project not found"
+    );
   }
 
-  const surahs = await Surah.find(filter, {
-    score: { $meta: "textScore" },
-  })
-    .sort({ score: { $meta: "textScore" } })
-    .select("id name transliteration verses")
-    .limit(10)
-    .lean();
-
-  const results: any[] = [];
-
-  for (const surah of surahs) {
-    const matchedVerses = surah.verses
-      .filter((verse: any) =>
-        verse.translation?.toLowerCase().includes(query.toLowerCase())
-      )
-      .slice(0, 5)
-      .map((verse: any) => ({
-        ayahId: verse.id,
-        text: verse.text,
-        translation: verse.translation,
-        preview: verse.translation.slice(0, 120),
-      }));
-
-    if (matchedVerses.length > 0) {
-      results.push({
-        surahId: surah.id,
-        surahName: surah.name,
-        transliteration: surah.transliteration,
-        verses: matchedVerses,
-      });
+  const result = await Project.findByIdAndUpdate(
+    id,
+    payload,
+    {
+      new: true,
+      runValidators: true,
     }
-  }
+  )
+    .populate("createdBy", "name email")
+    .populate("projectManager", "name email")
+    .populate("members", "name email avatar");
 
-  return results;
+  return result;
 };
 
-export const SurahService = {
-  getAllSurahs,
-  getSingleSurah,
-  searchAyah,
+// DELETE PROJECT (SOFT DELETE)
+const deleteProject = async (id: string) => {
+  const isProjectExists = await Project.findById(id);
+
+  if (!isProjectExists) {
+    throw new AppError(
+      httpStatus.NOT_FOUND,
+      "Project not found"
+    );
+  }
+
+  const result = await Project.findByIdAndUpdate(
+    id,
+    {
+      isDeleted: true,
+      deletedAt: new Date(),
+    },
+    {
+      new: true,
+    }
+  );
+
+  return result;
+};
+
+export const ProjectService = {
+  createProject,
+  getAllProjects,
+  getSingleProject,
+  updateProject,
+  deleteProject,
 };

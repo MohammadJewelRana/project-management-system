@@ -2,70 +2,97 @@ import { Request, Response } from "express";
 import httpStatus from "http-status";
 
 import sendResponse from "../../utils/sendResponse";
-
-import { SurahService } from "./project.service";
 import { catchAsync } from "../../utils/catchAsync";
-import { request } from "http";
 
-const getAllSurahs = catchAsync(async (req: Request, res: Response) => {
-  const result = await SurahService.getAllSurahs(req.query);
+import { ProjectService } from "./project.service";
 
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: "Surahs retrieved successfully",
-    data: result.data,
-    meta: result.meta,
-  });
-});
+// CREATE PROJECT
+const createProject = catchAsync(
+  async (req: Request, res: Response) => {
+    const result = await ProjectService.createProject(
+      req.body
+    );
 
-//  Get Single Surah
-const getSingleSurah = catchAsync(async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const { page, limit } = req.query;
-
-  const result = await SurahService.getSingleSurah(Number(id), {
-    page: page as string,
-    limit: limit as string,
-  });
-
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: "Surah retrieved successfully",
-    data: result,
-  });
-});
-
-//  Search Ayah
-const searchAyah = catchAsync(async (req: Request, res: Response) => {
-  const { q, surahId } = req.query;
-
-  const query = typeof q === "string" ? q.trim() : "";
-  const parsedSurahId =
-    typeof surahId === "string" ? Number(surahId) : undefined;
-
-  if (!query) {
-    return sendResponse(res, {
-      statusCode: httpStatus.OK,
+    sendResponse(res, {
+      statusCode: httpStatus.CREATED,
       success: true,
-      message: "Empty query",
-      data: [],
+      message: "Project created successfully",
+      data: result,
     });
   }
+);
 
-  const result = await SurahService.searchAyah(query, parsedSurahId);
+// GET ALL PROJECTS
+const getAllProjects = catchAsync(
+  async (_req: Request, res: Response) => {
+    const result = await ProjectService.getAllProjects();
 
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: "Search results retrieved successfully",
-    data: result,
-  });
-});
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Projects retrieved successfully",
+      data: result,
+    });
+  }
+);
 
-export const SurahController = {
-  getAllSurahs,
-  getSingleSurah,
-  searchAyah,
+// GET SINGLE PROJECT
+const getSingleProject = catchAsync(
+  async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    const result = await ProjectService.getSingleProject(
+      id as string
+    );
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Project retrieved successfully",
+      data: result,
+    });
+  }
+);
+
+// UPDATE PROJECT
+const updateProject = catchAsync(
+  async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    const result = await ProjectService.updateProject(
+      id as string,
+      req.body
+    );
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Project updated successfully",
+      data: result,
+    });
+  }
+);
+
+// DELETE PROJECT
+const deleteProject = catchAsync(
+  async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    const result = await ProjectService.deleteProject(id as string);
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Project deleted successfully",
+      data: result,
+    });
+  }
+);
+
+export const ProjectController = {
+  createProject,
+  getAllProjects,
+  getSingleProject,
+  updateProject,
+  deleteProject,
 };

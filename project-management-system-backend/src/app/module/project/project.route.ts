@@ -1,24 +1,19 @@
 import express from "express";
-import { SurahController } from "./project.controller";
+
+import { ProjectController } from "./project.controller";
 
 const router = express.Router();
 
-router.get("/", SurahController.getAllSurahs);
-router.get("/search", SurahController.searchAyah);
-router.get("/:id", SurahController.getSingleSurah);
+router.post("/", ProjectController.createProject);
 
-export const SurahRoutes = router;
+router.get("/", ProjectController.getAllProjects);
 
+router.get("/:id", ProjectController.getSingleProject);
 
+router.patch("/:id", ProjectController.updateProject);
 
+router.delete("/:id", ProjectController.deleteProject);
 
-
-
-
-
-
-
-
-
+export const ProjectRoutes = router;
 
 
