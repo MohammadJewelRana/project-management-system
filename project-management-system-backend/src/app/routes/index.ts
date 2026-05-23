@@ -6,6 +6,7 @@ import { SprintRoutes } from "../module/sprint/sprint.route";
 import { TaskRoutes } from "../module/task/task.route";
 import { TimeLogRoutes } from "../module/timeLog/timeLog.route";
 import { ActivityLogRoutes } from "../module/activityLog/activityLog.route";
+import { CommentRoutes } from "../module/comment/comment.route";
 
 const router = Router();
 
@@ -43,7 +44,10 @@ const moduleRoutes = [
     path: "/activity-logs",
     route: ActivityLogRoutes,
   },
-
+  {
+    path: "/comments",
+    route: CommentRoutes,
+  },
 ];
 
 moduleRoutes.forEach((route) => router.use(route.path, route.route));
