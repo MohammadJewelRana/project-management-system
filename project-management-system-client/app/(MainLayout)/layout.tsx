@@ -1,53 +1,40 @@
-import "@/styles/globals.css";
-import { Metadata, Viewport } from "next";
-import { Link } from "@heroui/link";
-import clsx from "clsx";
+// app/(mainLayout)/layout.tsx
 
-import { siteConfig } from "@/config/site";
-import { fontSans } from "@/config/fonts";
+"use client";
 
-import Footer from "@/components/shared/Footer";
-import { Navbar } from "@/components/shared/Navbar";
-import { Providers } from "../providers";
+import { Sidebar } from "@/components/layout/Sidebar";
+import { Topbar } from "@/components/layout/Topbar";
+import { useState } from "react";
 
-export const metadata: Metadata = {
-  title: {
-    default: siteConfig.name,
-    template: `%s - ${siteConfig.name}`,
-  },
-  description: siteConfig.description,
-  icons: {
-    icon: "/logo1.jpg",
-  },
-};
+ 
 
-export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "white" },
-    { media: "(prefers-color-scheme: dark)", color: "black" },
-  ],
-};
-
-export default function RootLayout({
+export default function MainLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const [collapsed, setCollapsed] = useState(false);
+
+  const [mobileOpen, setMobileOpen] = useState(false);
+
   return (
-    <html suppressHydrationWarning lang="en">
-      <head />
-      <body
-        className={clsx(
-          "min-h-screen text-foreground bg-background font-sans antialiased",
-          fontSans.variable,
-        )}
-      >
-        <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
-          <div className=" ">
-            <main className="     ">{children}</main>
+    <div className="flex h-screen overflow-hidden bg-[#09090B] text-white">
+      <Sidebar
+        collapsed={collapsed}
+        setCollapsed={setCollapsed}
+        mobileOpen={mobileOpen}
+        setMobileOpen={setMobileOpen}
+      />
+
+      <div className="flex flex-1 flex-col overflow-hidden">
+        <Topbar setMobileOpen={setMobileOpen} />
+
+        <main className="flex-1 overflow-y-auto bg-[#09090B] p-4 lg:p-8">
+          <div className="mx-auto w-full max-w-[1600px]">
+            {children}
           </div>
-        </Providers>
-      </body>
-    </html>
+        </main>
+      </div>
+    </div>
   );
 }
