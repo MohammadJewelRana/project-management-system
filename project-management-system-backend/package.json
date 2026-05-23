@@ -20,10 +20,12 @@
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
     "@langchain/google-genai": "^2.1.22",
+    "bcrypt": "^6.0.0",
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
     "http-status": "^2.1.0",
+    "jsonwebtoken": "^9.0.3",
     "langchain": "^1.2.28",
     "mongoose": "^9.2.3",
     "nodemailer": "^8.0.5",
@@ -31,8 +33,10 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@types/bcrypt": "^6.0.0",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^25.3.3",
     "@types/nodemailer": "^7.0.11",
     "@typescript-eslint/eslint-plugin": "^8.56.1",
