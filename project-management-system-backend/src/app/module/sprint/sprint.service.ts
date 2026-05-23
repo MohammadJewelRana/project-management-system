@@ -4,9 +4,11 @@ import { JwtPayload } from "jsonwebtoken";
 
 import { AppError } from "../../errors/AppError";
 
-import { Project } from "../project/project.model";
+import QueryBuilder from "../../builders/QueryBuilder";
 
-import { User } from "../user/user.model";
+import { validateActiveUser } from "../../helpers/validateActiveUser";
+
+import { Project } from "../project/project.model";
 
 import { ISprint } from "./sprint.interface";
 
@@ -26,13 +28,9 @@ const createSprint = async (payload: ISprint, user: JwtPayload) => {
 
   // CHECK MANAGER
   if (payload.sprintManager) {
-    const isManagerExists = await User.findById(payload.sprintManager);
+    const manager = await validateActiveUser(payload.sprintManager.toString());
 
-    if (!isManagerExists) {
-      throw new AppError(httpStatus.NOT_FOUND, "Sprint manager not found");
-    }
-
-    if (isManagerExists.role !== "manager") {
+    if (manager.role !== "manager") {
       throw new AppError(
         httpStatus.BAD_REQUEST,
         "Sprint manager must have manager role"
@@ -58,38 +56,32 @@ const createSprint = async (payload: ISprint, user: JwtPayload) => {
 };
 
 // GET ALL SPRINTS
-const getAllSprints = async (query: Record<string, any>) => {
-  const filter: Record<string, any> = {
-    isDeleted: false,
+const getAllSprints = async (query: Record<string, unknown>) => {
+  const searchableFields = ["name", "goal"];
+
+  const sprintQuery = new QueryBuilder(
+    Sprint.find({
+      isDeleted: false,
+    })
+      .populate("project", "title slug")
+      .populate("sprintManager", "name email role")
+      .populate("createdBy", "name email"),
+    query
+  )
+    .search(searchableFields)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await sprintQuery.modelQuery;
+
+  const meta = await sprintQuery.countTotal();
+
+  return {
+    meta,
+    result,
   };
-
-  // SEARCH
-  if (query.searchTerm) {
-    filter.name = {
-      $regex: query.searchTerm,
-      $options: "i",
-    };
-  }
-
-  // STATUS FILTER
-  if (query.status) {
-    filter.status = query.status;
-  }
-
-  // PROJECT FILTER
-  if (query.project) {
-    filter.project = query.project;
-  }
-
-  const result = await Sprint.find(filter)
-    .populate("project", "title slug")
-    .populate("sprintManager", "name email role")
-    .populate("createdBy", "name email")
-    .sort({
-      createdAt: -1,
-    });
-
-  return result;
 };
 
 // GET SINGLE SPRINT
@@ -120,12 +112,38 @@ const updateSprint = async (id: string, payload: Partial<ISprint>) => {
     throw new AppError(httpStatus.NOT_FOUND, "Sprint not found");
   }
 
+  // VALIDATE MANAGER
+  if (payload.sprintManager) {
+    const manager = await validateActiveUser(payload.sprintManager.toString());
+
+    if (manager.role !== "manager") {
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        "Sprint manager must have manager role"
+      );
+    }
+  }
+
+  // RECALCULATE DURATION
+  if (payload.startDate || payload.endDate) {
+    const startDate = payload.startDate || isSprintExists.startDate;
+
+    const endDate = payload.endDate || isSprintExists.endDate;
+
+    payload.duration = Math.ceil(
+      (new Date(endDate).getTime() - new Date(startDate).getTime()) /
+        (1000 * 60 * 60 * 24)
+    );
+  }
+
+  // UPDATE SPRINT
   const result = await Sprint.findByIdAndUpdate(id, payload, {
     new: true,
     runValidators: true,
   })
     .populate("project", "title slug")
-    .populate("sprintManager", "name email role");
+    .populate("sprintManager", "name email role")
+    .populate("createdBy", "name email");
 
   return result;
 };

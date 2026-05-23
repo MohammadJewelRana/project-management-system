@@ -4,29 +4,32 @@ import { JwtPayload } from "jsonwebtoken";
 
 import { AppError } from "../../errors/AppError";
 
-import { User } from "../user/user.model";
+import { validateActiveUser } from "../../helpers/validateActiveUser";
 
 import { IProject } from "./project.interface";
 
 import { Project } from "./project.model";
-
 import { generateSlug } from "./project.utils";
+import QueryBuilder from "../../builders/QueryBuilder";
 
 // CREATE PROJECT
 const createProject = async (payload: IProject, user: JwtPayload) => {
-  // CHECK PROJECT MANAGER
+  // VALIDATE PROJECT MANAGER
   if (payload.projectManager) {
-    const isManagerExists = await User.findById(payload.projectManager);
+    const manager = await validateActiveUser(payload.projectManager.toString());
 
-    if (!isManagerExists) {
-      throw new AppError(httpStatus.NOT_FOUND, "Project manager not found");
+    if (manager.role !== "manager") {
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        "Project manager must have manager role"
+      );
     }
   }
 
   // GENERATE SLUG
   const slug = generateSlug(payload.title);
 
-  // CHECK DUPLICATE SLUG
+  // CHECK DUPLICATE
   const isProjectExists = await Project.findOne({
     slug,
     isDeleted: false,
@@ -47,55 +50,32 @@ const createProject = async (payload: IProject, user: JwtPayload) => {
 };
 
 // GET ALL PROJECTS
-const getAllProjects = async (query: Record<string, any>) => {
-  const searchTerm = query.searchTerm || "";
+const getAllProjects = async (query: Record<string, unknown>) => {
+  const searchableFields = ["title", "client", "description"];
 
-  const status = query.status;
+  const projectQuery = new QueryBuilder(
+    Project.find({
+      isDeleted: false,
+    })
+      .populate("createdBy", "name email role")
+      .populate("projectManager", "name email avatar role")
+      .populate("members", "name email avatar role"),
+    query
+  )
+    .search(searchableFields)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
 
-  const priority = query.priority;
+  const result = await projectQuery.modelQuery;
 
-  const filter: Record<string, any> = {
-    isDeleted: false,
+  const meta = await projectQuery.countTotal();
+
+  return {
+    meta,
+    result,
   };
-
-  // SEARCH
-  if (searchTerm) {
-    filter.$or = [
-      {
-        title: {
-          $regex: searchTerm,
-          $options: "i",
-        },
-      },
-
-      {
-        client: {
-          $regex: searchTerm,
-          $options: "i",
-        },
-      },
-    ];
-  }
-
-  // STATUS FILTER
-  if (status) {
-    filter.status = status;
-  }
-
-  // PRIORITY FILTER
-  if (priority) {
-    filter.priority = priority;
-  }
-
-  const result = await Project.find(filter)
-    .populate("createdBy", "name email role")
-    .populate("projectManager", "name email avatar")
-    .populate("members", "name email avatar")
-    .sort({
-      createdAt: -1,
-    });
-
-  return result;
 };
 
 // GET SINGLE PROJECT
@@ -105,8 +85,8 @@ const getSingleProject = async (id: string) => {
     isDeleted: false,
   })
     .populate("createdBy", "name email role")
-    .populate("projectManager", "name email avatar")
-    .populate("members", "name email avatar");
+    .populate("projectManager", "name email avatar role")
+    .populate("members", "name email avatar role");
 
   if (!result) {
     throw new AppError(httpStatus.NOT_FOUND, "Project not found");
@@ -126,18 +106,31 @@ const updateProject = async (id: string, payload: Partial<IProject>) => {
     throw new AppError(httpStatus.NOT_FOUND, "Project not found");
   }
 
+  // VALIDATE PROJECT MANAGER
+  if (payload.projectManager) {
+    const manager = await validateActiveUser(payload.projectManager.toString());
+
+    if (manager.role !== "manager") {
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        "Project manager must have manager role"
+      );
+    }
+  }
+
   // UPDATE SLUG
   if (payload.title) {
     payload.slug = generateSlug(payload.title);
   }
 
+  // UPDATE PROJECT
   const result = await Project.findByIdAndUpdate(id, payload, {
     new: true,
     runValidators: true,
   })
     .populate("createdBy", "name email role")
-    .populate("projectManager", "name email avatar")
-    .populate("members", "name email avatar");
+    .populate("projectManager", "name email avatar role")
+    .populate("members", "name email avatar role");
 
   return result;
 };
@@ -170,45 +163,30 @@ const deleteProject = async (id: string) => {
 // ADD MEMBER
 const addMemberToProject = async (id: string, memberId: string) => {
   // CHECK PROJECT
-  const isProjectExists = await Project.findOne({
+  const project = await Project.findOne({
     _id: id,
     isDeleted: false,
   });
 
-  if (!isProjectExists) {
+  if (!project) {
     throw new AppError(httpStatus.NOT_FOUND, "Project not found");
   }
 
-  // CHECK USER
-  const isUserExists = await User.findOne({
-    _id: memberId,
-    isDeleted: false,
-  });
+  // VALIDATE USER
+  const member = await validateActiveUser(memberId);
 
-  if (!isUserExists) {
-    throw new AppError(httpStatus.NOT_FOUND, "User not found");
-  }
-
-  // CHECK STATUS
-  if (isUserExists.status !== "active") {
-    throw new AppError(httpStatus.BAD_REQUEST, "Inactive user cannot be added");
-  }
-
-  // CHECK ROLE
-  if (isUserExists.role !== "member") {
-    throw new AppError(
-      httpStatus.BAD_REQUEST,
-      "Only member role can be added to project members"
-    );
+  // ROLE VALIDATION
+  if (member.role !== "member") {
+    throw new AppError(httpStatus.BAD_REQUEST, "Only member role can be added");
   }
 
   // CHECK ALREADY EXISTS
-  const isAlreadyMember = isProjectExists.members.some(
-    (member) => member.toString() === memberId
+  const isAlreadyMember = project.members.some(
+    (item) => item.toString() === memberId
   );
 
   if (isAlreadyMember) {
-    throw new AppError(httpStatus.BAD_REQUEST, "User already added");
+    throw new AppError(httpStatus.BAD_REQUEST, "Member already exists");
   }
 
   // ADD MEMBER
@@ -223,14 +201,23 @@ const addMemberToProject = async (id: string, memberId: string) => {
       new: true,
     }
   )
-    .populate("members", "name email role avatar")
-    .populate("projectManager", "name email");
+    .populate("members", "name email avatar role")
+    .populate("projectManager", "name email avatar role");
 
   return result;
 };
 
 // REMOVE MEMBER
 const removeMemberFromProject = async (id: string, memberId: string) => {
+  const project = await Project.findOne({
+    _id: id,
+    isDeleted: false,
+  });
+
+  if (!project) {
+    throw new AppError(httpStatus.NOT_FOUND, "Project not found");
+  }
+
   const result = await Project.findByIdAndUpdate(
     id,
     {
@@ -241,7 +228,9 @@ const removeMemberFromProject = async (id: string, memberId: string) => {
     {
       new: true,
     }
-  );
+  )
+    .populate("members", "name email avatar role")
+    .populate("projectManager", "name email avatar role");
 
   return result;
 };
