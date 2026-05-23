@@ -229,10 +229,6 @@ const addMemberToProject = async (id: string, memberId: string) => {
   return result;
 };
 
-
-
-
-
 // REMOVE MEMBER
 const removeMemberFromProject = async (id: string, memberId: string) => {
   const result = await Project.findByIdAndUpdate(
