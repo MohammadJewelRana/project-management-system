@@ -1,21 +1,38 @@
 // app/(mainLayout)/layout.tsx
 
-import type { ReactNode } from "react";
+"use client";
 
-export default function MainLayout({ children }: { children: ReactNode }) {
+import { Sidebar } from "@/components/layout/Sidebar";
+import { Topbar } from "@/components/layout/Topbar";
+import { useState } from "react";
+
+ 
+
+export default function MainLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const [collapsed, setCollapsed] = useState(false);
+
+  const [mobileOpen, setMobileOpen] = useState(false);
+
   return (
     <div className="flex h-screen overflow-hidden bg-[#09090B] text-white">
-      {/* Sidebar */}
-      {/* <Sidebar /> */}
+      <Sidebar
+        collapsed={collapsed}
+        setCollapsed={setCollapsed}
+        mobileOpen={mobileOpen}
+        setMobileOpen={setMobileOpen}
+      />
 
-      {/* Main Section */}
       <div className="flex flex-1 flex-col overflow-hidden">
-        {/* Topbar */}
-        {/* <Topbar /> */}
+        <Topbar setMobileOpen={setMobileOpen} />
 
-        {/* Content */}
-        <main className="flex-1 overflow-y-auto bg-[#09090B] p-6 lg:p-8">
-          <div className="mx-auto w-full max-w-[1600px]">{children}</div>
+        <main className="flex-1 overflow-y-auto bg-[#09090B] p-4 lg:p-8">
+          <div className="mx-auto w-full max-w-[1600px]">
+            {children}
+          </div>
         </main>
       </div>
     </div>
