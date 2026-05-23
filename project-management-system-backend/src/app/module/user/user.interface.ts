@@ -1,9 +1,5 @@
 import { TUserRole, TUserStatus } from "./user.constant";
 
- 
-
- 
-
 export interface IUser {
   name: string;
 
