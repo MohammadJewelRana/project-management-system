@@ -1,12 +1,13 @@
 import { Router } from "express";
-import { SurahRoutes } from "../module/project/project.route";
+import { ProjectRoutes } from "../module/project/project.route";
+ 
 
 const router = Router();
 
 const moduleRoutes = [
   {
-    path: "/surahs",
-    route: SurahRoutes,
+    path: "/projects",
+    route: ProjectRoutes,
   },
 ];
 

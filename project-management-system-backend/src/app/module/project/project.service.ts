@@ -1,13 +1,14 @@
 import httpStatus from "http-status";
 
- 
-
 import { IProject } from "./project.interface";
 import { Project } from "./project.model";
 import { AppError } from "../../errors/AppError";
 
 // CREATE PROJECT
 const createProject = async (payload: IProject) => {
+  if (!payload) {
+    throw new AppError(httpStatus.BAD_REQUEST, "Project data is required");
+  }
   const result = await Project.create(payload);
 
   return result;
@@ -32,37 +33,24 @@ const getSingleProject = async (id: string) => {
     .populate("members", "name email avatar");
 
   if (!result) {
-    throw new AppError(
-      httpStatus.NOT_FOUND,
-      "Project not found"
-    );
+    throw new AppError(httpStatus.NOT_FOUND, "Project not found");
   }
 
   return result;
 };
 
 // UPDATE PROJECT
-const updateProject = async (
-  id: string,
-  payload: Partial<IProject>
-) => {
+const updateProject = async (id: string, payload: Partial<IProject>) => {
   const isProjectExists = await Project.findById(id);
 
   if (!isProjectExists) {
-    throw new AppError(
-      httpStatus.NOT_FOUND,
-      "Project not found"
-    );
+    throw new AppError(httpStatus.NOT_FOUND, "Project not found");
   }
 
-  const result = await Project.findByIdAndUpdate(
-    id,
-    payload,
-    {
-      new: true,
-      runValidators: true,
-    }
-  )
+  const result = await Project.findByIdAndUpdate(id, payload, {
+    new: true,
+    runValidators: true,
+  })
     .populate("createdBy", "name email")
     .populate("projectManager", "name email")
     .populate("members", "name email avatar");
@@ -75,10 +63,7 @@ const deleteProject = async (id: string) => {
   const isProjectExists = await Project.findById(id);
 
   if (!isProjectExists) {
-    throw new AppError(
-      httpStatus.NOT_FOUND,
-      "Project not found"
-    );
+    throw new AppError(httpStatus.NOT_FOUND, "Project not found");
   }
 
   const result = await Project.findByIdAndUpdate(
