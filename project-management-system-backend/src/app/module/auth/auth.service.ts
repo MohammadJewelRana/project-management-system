@@ -6,6 +6,7 @@ import { User } from "../user/user.model";
 
 import httpStatus from "http-status";
 import { AppError } from "../../errors/AppError";
+import config from "../../config";
 
 // REGISTER USER
 const registerUser = async (payload: any) => {
@@ -21,7 +22,7 @@ const registerUser = async (payload: any) => {
   // HASH PASSWORD
   const hashedPassword = await bcrypt.hash(
     payload.password,
-    Number(process.env.BCRYPT_SALT_ROUNDS)
+    Number(config.bcrypt_salt_rounds)
   );
 
   // CREATE USER
@@ -58,20 +59,21 @@ const loginUser = async (payload: { email: string; password: string }) => {
     userId: user._id,
     email: user.email,
     role: user.role,
+    status: user.status,
   };
 
   // ACCESS TOKEN
   const accessToken = createToken(
     jwtPayload,
-    process.env.JWT_ACCESS_SECRET!,
-    process.env.JWT_ACCESS_EXPIRES_IN!
+    config.jwt_access_secret!,
+    config.jwt_access_expires_in!
   );
 
   // REFRESH TOKEN
   const refreshToken = createToken(
     jwtPayload,
-    process.env.JWT_REFRESH_SECRET!,
-    process.env.JWT_REFRESH_EXPIRES_IN!
+    config.jwt_refresh_secret!,
+    config.jwt_refresh_expires_in!
   );
 
   // REMOVE PASSWORD

@@ -1,6 +1,8 @@
-export type UserRole = "admin" | "manager" | "member";
+import { TUserRole, TUserStatus } from "./user.constant";
 
-export type UserStatus = "active" | "inactive" | "suspended";
+ 
+
+ 
 
 export interface IUser {
   name: string;
@@ -17,7 +19,7 @@ export interface IUser {
 
   bio?: string;
 
-  role: UserRole;
+  role: TUserRole;
 
   department?: string;
 
@@ -25,7 +27,7 @@ export interface IUser {
 
   skills?: string[];
 
-  status: UserStatus;
+  status: TUserStatus;
 
   isVerified: boolean;
 

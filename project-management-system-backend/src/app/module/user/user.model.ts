@@ -1,6 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 import bcrypt from "bcrypt";
 import { IUser } from "./user.interface";
+import { USER_ROLE, USER_STATUS } from "./user.constant";
 
 const userSchema = new Schema<IUser>(
   {
@@ -52,9 +53,8 @@ const userSchema = new Schema<IUser>(
 
     role: {
       type: String,
-      enum: ["admin", "manager", "member"],
-      default: "member",
-      index: true,
+      enum: Object.values(USER_ROLE),
+      default: USER_ROLE.member,
     },
 
     department: {
@@ -74,8 +74,8 @@ const userSchema = new Schema<IUser>(
 
     status: {
       type: String,
-      enum: ["active", "inactive", "suspended"],
-      default: "active",
+      enum: Object.values(USER_STATUS),
+      default: USER_STATUS.active,
       index: true,
     },
 
