@@ -1,52 +1,94 @@
 import httpStatus from "http-status";
 
+import mongoose from "mongoose";
+
 import { JwtPayload } from "jsonwebtoken";
 
 import { AppError } from "../../errors/AppError";
 
+import QueryBuilder from "../../builders/QueryBuilder";
+
 import { validateActiveUser } from "../../helpers/validateActiveUser";
+
+import { ActivityLogService } from "../activityLog/activityLog.service";
 
 import { IProject } from "./project.interface";
 
 import { Project } from "./project.model";
+
 import { generateSlug } from "./project.utils";
-import QueryBuilder from "../../builders/QueryBuilder";
 
 // CREATE PROJECT
 const createProject = async (payload: IProject, user: JwtPayload) => {
-  // VALIDATE PROJECT MANAGER
-  if (payload.projectManager) {
-    const manager = await validateActiveUser(payload.projectManager.toString());
+  const session = await mongoose.startSession();
 
-    if (manager.role !== "manager") {
-      throw new AppError(
-        httpStatus.BAD_REQUEST,
-        "Project manager must have manager role"
+  try {
+    session.startTransaction();
+
+    // VALIDATE PROJECT MANAGER
+    if (payload.projectManager) {
+      const manager = await validateActiveUser(
+        payload.projectManager.toString()
       );
+
+      if (manager.role !== "manager") {
+        throw new AppError(
+          httpStatus.BAD_REQUEST,
+          "Project manager must have manager role"
+        );
+      }
     }
+
+    // GENERATE SLUG
+    const slug = generateSlug(payload.title);
+
+    // CHECK DUPLICATE
+    const isProjectExists = await Project.findOne({
+      slug,
+      isDeleted: false,
+    });
+
+    if (isProjectExists) {
+      throw new AppError(httpStatus.BAD_REQUEST, "Project already exists");
+    }
+
+    // CREATE PROJECT
+    const createdProject = await Project.create(
+      [
+        {
+          ...payload,
+          slug,
+          createdBy: user.userId,
+        },
+      ],
+      { session }
+    );
+
+    const result = createdProject[0];
+
+    // CREATE ACTIVITY LOG
+    await ActivityLogService.createActivityLog({
+      user: user.userId,
+
+      project: result._id,
+
+      type: "project-created",
+
+      message: `Project "${result.title}" created`,
+    });
+
+    await session.commitTransaction();
+
+    await session.endSession();
+
+    return result;
+  } catch (error) {
+    await session.abortTransaction();
+
+    await session.endSession();
+
+    throw error;
   }
-
-  // GENERATE SLUG
-  const slug = generateSlug(payload.title);
-
-  // CHECK DUPLICATE
-  const isProjectExists = await Project.findOne({
-    slug,
-    isDeleted: false,
-  });
-
-  if (isProjectExists) {
-    throw new AppError(httpStatus.BAD_REQUEST, "Project already exists");
-  }
-
-  // CREATE PROJECT
-  const result = await Project.create({
-    ...payload,
-    slug,
-    createdBy: user.userId,
-  });
-
-  return result;
 };
 
 // GET ALL PROJECTS
@@ -132,6 +174,17 @@ const updateProject = async (id: string, payload: Partial<IProject>) => {
     .populate("projectManager", "name email avatar role")
     .populate("members", "name email avatar role");
 
+  // CREATE ACTIVITY LOG
+  await ActivityLogService.createActivityLog({
+    user: result!.createdBy,
+
+    project: result!._id,
+
+    type: "project-updated",
+
+    message: `Project "${result!.title}" updated`,
+  });
+
   return result;
 };
 
@@ -156,6 +209,17 @@ const deleteProject = async (id: string) => {
       new: true,
     }
   );
+
+  // CREATE ACTIVITY LOG
+  await ActivityLogService.createActivityLog({
+    user: result!.createdBy,
+
+    project: result!._id,
+
+    type: "project-deleted",
+
+    message: `Project "${result!.title}" deleted`,
+  });
 
   return result;
 };
@@ -204,6 +268,17 @@ const addMemberToProject = async (id: string, memberId: string) => {
     .populate("members", "name email avatar role")
     .populate("projectManager", "name email avatar role");
 
+  // CREATE ACTIVITY LOG
+  await ActivityLogService.createActivityLog({
+    user: memberId as any,
+
+    project: result!._id,
+
+    type: "project-updated",
+
+    message: `New member added to project "${result?.title}"`,
+  });
+
   return result;
 };
 
@@ -231,6 +306,17 @@ const removeMemberFromProject = async (id: string, memberId: string) => {
   )
     .populate("members", "name email avatar role")
     .populate("projectManager", "name email avatar role");
+
+  // CREATE ACTIVITY LOG
+  await ActivityLogService.createActivityLog({
+    user: memberId as any,
+
+    project: result!._id,
+
+    type: "project-updated",
+
+    message: `Member removed from project "${result?.title}"`,
+  });
 
   return result;
 };

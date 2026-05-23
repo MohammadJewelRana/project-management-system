@@ -1,5 +1,7 @@
 import httpStatus from "http-status";
 
+import mongoose from "mongoose";
+
 import { JwtPayload } from "jsonwebtoken";
 
 import { AppError } from "../../errors/AppError";
@@ -7,6 +9,8 @@ import { AppError } from "../../errors/AppError";
 import QueryBuilder from "../../builders/QueryBuilder";
 
 import { validateActiveUser } from "../../helpers/validateActiveUser";
+
+import { ActivityLogService } from "../activityLog/activityLog.service";
 
 import { Project } from "../project/project.model";
 
@@ -16,43 +20,81 @@ import { Sprint } from "./sprint.model";
 
 // CREATE SPRINT
 const createSprint = async (payload: ISprint, user: JwtPayload) => {
-  // CHECK PROJECT
-  const isProjectExists = await Project.findOne({
-    _id: payload.project,
-    isDeleted: false,
-  });
+  const session = await mongoose.startSession();
 
-  if (!isProjectExists) {
-    throw new AppError(httpStatus.NOT_FOUND, "Project not found");
-  }
+  try {
+    session.startTransaction();
 
-  // CHECK MANAGER
-  if (payload.sprintManager) {
-    const manager = await validateActiveUser(payload.sprintManager.toString());
+    // CHECK PROJECT
+    const isProjectExists = await Project.findOne({
+      _id: payload.project,
+      isDeleted: false,
+    });
 
-    if (manager.role !== "manager") {
-      throw new AppError(
-        httpStatus.BAD_REQUEST,
-        "Sprint manager must have manager role"
-      );
+    if (!isProjectExists) {
+      throw new AppError(httpStatus.NOT_FOUND, "Project not found");
     }
+
+    // CHECK MANAGER
+    if (payload.sprintManager) {
+      const manager = await validateActiveUser(
+        payload.sprintManager.toString()
+      );
+
+      if (manager.role !== "manager") {
+        throw new AppError(
+          httpStatus.BAD_REQUEST,
+          "Sprint manager must have manager role"
+        );
+      }
+    }
+
+    // CALCULATE DURATION
+    const duration = Math.ceil(
+      (new Date(payload.endDate).getTime() -
+        new Date(payload.startDate).getTime()) /
+        (1000 * 60 * 60 * 24)
+    );
+
+    // CREATE SPRINT
+    const createdSprint = await Sprint.create(
+      [
+        {
+          ...payload,
+          duration,
+          createdBy: user.userId,
+        },
+      ],
+      { session }
+    );
+
+    const result = createdSprint[0];
+
+    // CREATE ACTIVITY LOG
+    await ActivityLogService.createActivityLog({
+      user: user.userId,
+
+      project: payload.project,
+
+      sprint: result._id,
+
+      type: "sprint-created",
+
+      message: `Sprint "${result.name}" created`,
+    });
+
+    await session.commitTransaction();
+
+    await session.endSession();
+
+    return result;
+  } catch (error) {
+    await session.abortTransaction();
+
+    await session.endSession();
+
+    throw error;
   }
-
-  // CALCULATE DURATION
-  const duration = Math.ceil(
-    (new Date(payload.endDate).getTime() -
-      new Date(payload.startDate).getTime()) /
-      (1000 * 60 * 60 * 24)
-  );
-
-  // CREATE SPRINT
-  const result = await Sprint.create({
-    ...payload,
-    duration,
-    createdBy: user.userId,
-  });
-
-  return result;
 };
 
 // GET ALL SPRINTS
@@ -145,6 +187,19 @@ const updateSprint = async (id: string, payload: Partial<ISprint>) => {
     .populate("sprintManager", "name email role")
     .populate("createdBy", "name email");
 
+  // CREATE ACTIVITY LOG
+  await ActivityLogService.createActivityLog({
+    user: result!.createdBy,
+
+    project: result!.project,
+
+    sprint: result!._id,
+
+    type: "sprint-updated",
+
+    message: `Sprint "${result!.name}" updated`,
+  });
+
   return result;
 };
 
@@ -169,6 +224,19 @@ const deleteSprint = async (id: string) => {
       new: true,
     }
   );
+
+  // CREATE ACTIVITY LOG
+  await ActivityLogService.createActivityLog({
+    user: result!.createdBy,
+
+    project: result!.project,
+
+    sprint: result!._id,
+
+    type: "sprint-updated",
+
+    message: `Sprint "${result!.name}" deleted`,
+  });
 
   return result;
 };

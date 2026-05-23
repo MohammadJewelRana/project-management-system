@@ -22,7 +22,9 @@ const createTimeLog = catchAsync(async (req: Request, res: Response) => {
 
 // GET ALL LOGS
 const getAllTimeLogs = catchAsync(async (req: Request, res: Response) => {
-  const result = await TimeLogService.getAllTimeLogs(req.query as Record<string, unknown>);
+  const result = await TimeLogService.getAllTimeLogs(
+    req.query as Record<string, unknown>
+  );
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -46,7 +48,11 @@ const getSingleTimeLog = catchAsync(async (req: Request, res: Response) => {
 
 // UPDATE LOG
 const updateTimeLog = catchAsync(async (req: Request, res: Response) => {
-  const result = await TimeLogService.updateTimeLog(req.params.id as string, req.body);
+  const result = await TimeLogService.updateTimeLog(
+    req.params.id as string,
+    req.body,
+    req.user
+  );
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -58,7 +64,10 @@ const updateTimeLog = catchAsync(async (req: Request, res: Response) => {
 
 // DELETE LOG
 const deleteTimeLog = catchAsync(async (req: Request, res: Response) => {
-  const result = await TimeLogService.deleteTimeLog(req.params.id as string);
+  const result = await TimeLogService.deleteTimeLog(
+    req.params.id as string,
+    req.user
+  );
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
