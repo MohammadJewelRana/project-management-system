@@ -5,6 +5,7 @@ import { UserRoutes } from "../module/user/user.route";
 import { SprintRoutes } from "../module/sprint/sprint.route";
 import { TaskRoutes } from "../module/task/task.route";
 import { TimeLogRoutes } from "../module/timeLog/timeLog.route";
+import { ActivityLogRoutes } from "../module/activityLog/activityLog.route";
 
 const router = Router();
 
@@ -37,6 +38,10 @@ const moduleRoutes = [
   {
     path: "/sprints",
     route: SprintRoutes,
+  },
+  {
+    path: "/activity-logs",
+    route: ActivityLogRoutes,
   },
 
 ];
