@@ -1,133 +1,191 @@
+// components/landing/navbar.tsx
+
 "use client";
 
-import { motion } from "framer-motion";
+import Link from "next/link";
+import { useState } from "react";
+
+import { AnimatePresence, motion } from "framer-motion";
 
 import {
-  Navbar as HeroUINavbar,
-  NavbarContent,
-  NavbarMenu,
-  NavbarMenuToggle,
-  NavbarBrand,
-  NavbarItem,
-  NavbarMenuItem,
-} from "@heroui/navbar";
+  HiOutlineLightningBolt,
+  HiOutlineShieldCheck,
+  HiOutlineUserGroup,
+  HiOutlineMenuAlt3,
+  HiX,
+} from "react-icons/hi";
 
-import { Button } from "@heroui/button";
-import { Link } from "@heroui/link";
+export function Navbar() {
+  const [mobileOpen, setMobileOpen] =
+    useState(false);
 
-import NextLink from "next/link";
-
-import { siteConfig } from "@/config/site";
-import { ThemeSwitch } from "@/components/theme-switch";
-import { Logo } from "@/components/icons";
-import Image from "next/image";
-import image from "@/assets/logo/logo1.jpg";
-
-export const Navbar = () => {
   return (
-    <HeroUINavbar
-      maxWidth="xl"
-      position="sticky"
-      className="
-      bg-white/60 dark:bg-black/40
-      backdrop-blur-xl
-      border-b border-white/20 dark:border-white/10
-      shadow-sm
-    "
-    >
-      {/* Left Section */}
-      <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
-        {/* Logo */}
-        <NavbarBrand as="li" className="gap-3 max-w-fit">
-          <NextLink className="flex justify-start items-center gap-2" href="/">
-            <Image
-              src={image}
-              alt="FedIQ Logo"
-              width={32}
-              height={32}
-              priority
-              className="rounded-full"
+    <>
+      <header className="sticky top-0 z-50 border-b border-white/[0.06] bg-[#050816]/70 backdrop-blur-2xl">
+        <div className="mx-auto flex h-[76px] max-w-7xl items-center justify-between px-4 sm:px-6">
+          {/* LEFT */}
+          <Link
+            href="/"
+            className="flex items-center gap-3"
+          >
+            {/* LOGO */}
+            <div className="relative">
+              <div className="absolute inset-0 rounded-2xl bg-blue-500/30 blur-xl" />
+
+              <motion.div
+                whileHover={{
+                  rotate: 8,
+                  scale: 1.05,
+                }}
+                className="relative flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 via-indigo-500 to-violet-500 shadow-[0_0_40px_rgba(59,130,246,0.45)]"
+              >
+                <HiOutlineLightningBolt className="text-[22px] text-white" />
+              </motion.div>
+            </div>
+
+            {/* TEXT */}
+            <div>
+              <h1 className="bg-gradient-to-r from-white to-zinc-400 bg-clip-text text-xl font-bold tracking-tight text-transparent sm:text-2xl">
+                MPMS
+              </h1>
+
+              <p className="hidden text-xs tracking-wide text-zinc-500 sm:block">
+                Enterprise Workflow Platform
+              </p>
+            </div>
+          </Link>
+
+          {/* DESKTOP BUTTONS */}
+          <div className="hidden items-center gap-4 md:flex">
+            {/* ADMIN */}
+            <motion.div
+              whileHover={{
+                scale: 1.03,
+              }}
+              whileTap={{
+                scale: 0.98,
+              }}
+            >
+              <Link
+                href="/admin/login"
+                className="flex h-11 items-center gap-2 rounded-2xl border border-white/[0.08] bg-white/[0.03] px-5 text-sm font-semibold text-white transition-all duration-300 hover:border-white/[0.12] hover:bg-white/[0.05]"
+              >
+                <HiOutlineShieldCheck className="text-lg" />
+
+                Admin Login
+              </Link>
+            </motion.div>
+
+            {/* MEMBER */}
+            <motion.div
+              whileHover={{
+                scale: 1.03,
+              }}
+              whileTap={{
+                scale: 0.98,
+              }}
+            >
+              <Link
+                href="/member/login"
+                className="flex h-11 items-center gap-2 rounded-2xl bg-gradient-to-r from-blue-500 to-indigo-500 px-5 text-sm font-semibold text-white shadow-[0_0_35px_rgba(59,130,246,0.35)]"
+              >
+                <HiOutlineUserGroup className="text-lg" />
+
+                Member Login
+              </Link>
+            </motion.div>
+          </div>
+
+          {/* MOBILE MENU BUTTON */}
+          <button
+            onClick={() =>
+              setMobileOpen(!mobileOpen)
+            }
+            className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/[0.08] bg-white/[0.03] text-white transition-all duration-300 hover:bg-white/[0.05] md:hidden"
+          >
+            {mobileOpen ? (
+              <HiX className="text-2xl" />
+            ) : (
+              <HiOutlineMenuAlt3 className="text-2xl" />
+            )}
+          </button>
+        </div>
+      </header>
+
+      {/* MOBILE MENU */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <>
+            {/* OVERLAY */}
+            <motion.div
+              initial={{
+                opacity: 0,
+              }}
+              animate={{
+                opacity: 1,
+              }}
+              exit={{
+                opacity: 0,
+              }}
+              onClick={() =>
+                setMobileOpen(false)
+              }
+              className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm md:hidden"
             />
 
-            <motion.span
-              className="
-              font-bold text-xl
-              bg-gradient-to-r
-              from-primary
-              via-secondary
-              to-primary
-              bg-clip-text
-              text-transparent
-            "
+            {/* MENU */}
+            <motion.div
+              initial={{
+                opacity: 0,
+                y: -20,
+              }}
               animate={{
-                backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
+                opacity: 1,
+                y: 0,
               }}
-              transition={{
-                duration: 4,
-                repeat: Infinity,
+              exit={{
+                opacity: 0,
+                y: -20,
               }}
-              style={{ backgroundSize: "200% 200%" }}
+              className="fixed left-4 right-4 top-[88px] z-50 overflow-hidden rounded-3xl border border-white/[0.08] bg-[#0B1120]/95 p-5 shadow-[0_20px_80px_rgba(0,0,0,0.45)] backdrop-blur-2xl md:hidden"
             >
-              FedIQ
-            </motion.span>
-          </NextLink>
-        </NavbarBrand>
-      </NavbarContent>
+              {/* TOP */}
+              <div className="mb-5 border-b border-white/[0.06] pb-4">
+                <h3 className="text-lg font-bold text-white">
+                  Workspace Access
+                </h3>
 
-      {/* Right Section */}
-      <NavbarContent
-        className="hidden sm:flex basis-1/5 sm:basis-full"
-        justify="end"
-      >
-        <NavbarItem className="hidden sm:flex gap-2">
-          <ThemeSwitch />
-        </NavbarItem>
+                <p className="mt-1 text-sm text-zinc-500">
+                  Choose your workspace panel
+                </p>
+              </div>
 
-        <NavbarItem className="hidden md:flex">
-          <Button
-            as={Link}
-            className="
-            text-sm font-normal
-            text-default-600
-            bg-white/70 dark:bg-white/10
-            backdrop-blur-md
-            border border-white/20
-          "
-            variant="flat"
-          >
-            Login
-          </Button>
-        </NavbarItem>
-      </NavbarContent>
+              {/* BUTTONS */}
+              <div className="space-y-3">
+                {/* ADMIN */}
+                <Link
+                  href="/admin/login"
+                  className="flex h-14 items-center justify-center gap-3 rounded-2xl border border-white/[0.08] bg-white/[0.03] text-sm font-semibold text-white transition-all duration-300 hover:bg-white/[0.05]"
+                >
+                  <HiOutlineShieldCheck className="text-xl" />
 
-      {/* Mobile Section */}
-      <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
-        <ThemeSwitch />
-        <NavbarMenuToggle />
-      </NavbarContent>
+                  Admin Login
+                </Link>
 
-      {/* Mobile Menu */}
-      <NavbarMenu>
-        <div className="mx-4 mt-2 flex flex-col gap-2">
-          {siteConfig.navMenuItems.map((item, index) => (
-            <NavbarMenuItem key={`${item}-${index}`}>
-              <Link
-                color={
-                  index === 2
-                    ? "primary"
-                    : index === siteConfig.navMenuItems.length - 1
-                      ? "danger"
-                      : "foreground"
-                }
-                href="#"
-                size="lg"
-              >
-                {item.label}
-              </Link>
-            </NavbarMenuItem>
-          ))}
-        </div>
-      </NavbarMenu>
-    </HeroUINavbar>
+                {/* MEMBER */}
+                <Link
+                  href="/member/login"
+                  className="flex h-14 items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-blue-500 to-indigo-500 text-sm font-semibold text-white shadow-[0_0_35px_rgba(59,130,246,0.35)]"
+                >
+                  <HiOutlineUserGroup className="text-xl" />
+
+                  Member Login
+                </Link>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+    </>
   );
-};
+}
