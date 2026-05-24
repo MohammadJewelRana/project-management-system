@@ -11,7 +11,10 @@ import {
 
 import { ProjectForm, ProjectFormValues } from "./_components/ProjectForm";
 import { ProjectCard } from "./_components/ProjectCard";
-import { useCreateProject } from "@/store/hooks/project.hook";
+import {
+  useCreateProject,
+  useGetAllProjects,
+} from "@/store/hooks/project.hook";
 import { useGetAllUsers } from "@/store/hooks/user.hook";
 
 const mockProjects = [
@@ -77,7 +80,16 @@ export default function ProjectsPage() {
   const { users } = useGetAllUsers({
     limit: 100,
   });
-  console.log(users);
+  // console.log(users);
+  const { projects, allData:allProjectData, isLoading: projectsLoading } = useGetAllProjects({
+    page: 1,
+    limit: 20,
+  });
+  // console.log(projects);
+  console.log(allProjectData);
+ 
+
+
 
   const managerUsers =
     users?.filter((user: any) => user.role === "manager") || [];
@@ -174,7 +186,7 @@ export default function ProjectsPage() {
       </AnimatePresence>
 
       <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-        {mockProjects.map((project) => (
+        {allProjectData.map((project: any) => (
           <ProjectCard key={project._id} project={project} />
         ))}
       </div>

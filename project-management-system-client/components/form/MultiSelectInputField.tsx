@@ -46,7 +46,7 @@ export const MultiSelectField = ({
           <Select
             isMulti
             options={options}
-            value={options.filter((option) =>
+            value={options?.filter((option) =>
               field.value?.includes(option.value),
             )}
             onChange={(selected: any) => {

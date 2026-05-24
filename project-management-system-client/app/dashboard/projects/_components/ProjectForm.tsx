@@ -64,7 +64,6 @@ type Props = {
   memberUsers: any[];
 };
 
-
 const technologyOptions = [
   // Frontend
   { label: "React.js", value: "React.js" },
@@ -113,8 +112,6 @@ const technologyOptions = [
   { label: "JWT", value: "JWT" },
   { label: "Git", value: "Git" },
 ];
-
-
 
 export function ProjectForm({
   register,
@@ -344,21 +341,17 @@ export function ProjectForm({
             register={register("members")}
           /> */}
 
- 
-
           <MultiSelectField
-  label="Members"
-  name="members"
-  control={control}
-  options={memberUsers?.map(
-    (user: any) => ({
-      label: user.name,
-      value: user._id,
-    })
-  )}
-  placeholder="Select Members"
-  icon={<HiOutlineUsers className="text-lg" />}
-/>
+            label="Members"
+            name="members"
+            control={control}
+            options={memberUsers?.map((user: any) => ({
+              label: user.name,
+              value: user._id,
+            }))}
+            placeholder="Select Members"
+            icon={<HiOutlineUsers className="text-lg" />}
+          />
 
           <div className="lg:col-span-2">
             <CustomFormField
@@ -369,35 +362,14 @@ export function ProjectForm({
             />
           </div>
 
- 
-
-
-
- <MultiSelectField
-  label="Technologies"
-  name="technologies"
-  control={control}
-  options={technologyOptions}
-  placeholder="Select Technologies"
-  icon={
-    <HiOutlineSparkles className="text-lg" />
-  }
-/>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+          <MultiSelectField
+            label="Technologies"
+            name="technologies"
+            control={control}
+            options={technologyOptions}
+            placeholder="Select Technologies"
+            icon={<HiOutlineSparkles className="text-lg" />}
+          />
 
           <div className="lg:col-span-2">
             <div className="flex items-center gap-3 rounded-2xl border border-white/[0.06] bg-white/[0.03] px-4 py-3">

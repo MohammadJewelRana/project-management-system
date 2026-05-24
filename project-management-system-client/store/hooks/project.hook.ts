@@ -8,6 +8,7 @@ import {
   useRemoveMemberFromProjectMutation,
   useUpdateProjectMutation,
 } from "../services/project.api";
+import { useRouter } from "next/navigation";
 
 // Create Project
 export const useCreateProject = () => {
@@ -31,13 +32,16 @@ export const useGetAllProjects = (filters: any) => {
   const { data, error, isLoading } = useGetAllProjectsQuery(filters);
 
   let projects: any[] = [];
+  let allData: any[] = [];
 
   if (data?.success) {
     projects = data.data;
+    allData = data.data?.result || [];
   }
 
   return {
     projects,
+    allData,
     isLoading,
     isError: !!error,
   };
@@ -69,11 +73,13 @@ export const useGetSingleProject = (id: string) => {
 // Update Project
 export const useUpdateProject = () => {
   const [updateProject, { isLoading, error }] = useUpdateProjectMutation();
-
+  const router = useRouter();
   const update = async (id: string, data: any) => {
     try {
       await updateProject({ id, data }).unwrap();
       toast.success("Project updated successfully!");
+
+      router.push("/dashboard/projects");
     } catch (err) {
       toast.error("Failed to update project!");
       console.error(err);
