@@ -112,12 +112,7 @@ export default function ProjectsPage() {
             .map((item) => item.trim())
             .filter(Boolean)
         : [],
-      technologies: data.technologies
-        ? data.technologies
-            .split(",")
-            .map((item) => item.trim())
-            .filter(Boolean)
-        : [],
+      technologies: data.technologies || [],
       members: data.members || [],
     };
     console.log("Payload:", payload);

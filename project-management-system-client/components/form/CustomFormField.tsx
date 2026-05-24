@@ -63,12 +63,12 @@ export const CustomFormField = forwardRef<
     return (
       <div className="space-y-2">
         {/* LABEL */}
-        <label className="text-sm font-medium text-zinc-300">{label}</label>
+        <label className="text-sm font-medium text-zinc-300  ">{label}</label>
 
         {/* FIELD WRAPPER */}
         <div
           className={clsx(
-            "group relative overflow-hidden rounded-2xl border transition-all duration-300",
+            "group relative overflow-hidden rounded-2xl border transition-all duration-300 mt-2",
             disabled && "cursor-not-allowed opacity-60",
 
             error
@@ -118,32 +118,30 @@ export const CustomFormField = forwardRef<
 
           {/* SELECT */}
           {select && (
-          <select
-  multiple={multiple}
-  disabled={disabled}
-  {...register}
-  className={clsx(
-    "relative w-full bg-[#18181B] text-sm text-white outline-none transition-all duration-300",
+            <select
+              multiple={multiple}
+              disabled={disabled}
+              {...register}
+              className={clsx(
+                "relative w-full bg-[#18181B] text-sm text-white outline-none transition-all duration-300",
 
-    multiple
-      ? "min-h-[140px] py-3"
-      : "h-11 appearance-none sm:h-12",
+                multiple
+                  ? "min-h-[140px] py-3"
+                  : "h-11 appearance-none sm:h-12",
 
-    icon
-      ? "pl-12 pr-10"
-      : "px-4"
-  )}
->
-  {options?.map((option) => (
-    <option
-      key={option.value}
-      value={option.value}
-      className="bg-[#18181B]"
-    >
-      {option.label}
-    </option>
-  ))}
-</select>
+                icon ? "pl-12 pr-10" : "px-4",
+              )}
+            >
+              {options?.map((option) => (
+                <option
+                  key={option.value}
+                  value={option.value}
+                  className="bg-[#18181B]"
+                >
+                  {option.label}
+                </option>
+              ))}
+            </select>
           )}
 
           {/* SELECT ICON */}

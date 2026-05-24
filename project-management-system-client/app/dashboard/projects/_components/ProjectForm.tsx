@@ -28,6 +28,7 @@ import {
 } from "react-icons/hi";
 import { CustomFormField } from "@/components/form/CustomFormField";
 import { useGetAllUsers } from "@/store/hooks/user.hook";
+import { MultiSelectField } from "@/components/form/MultiSelectInputField";
 
 export type ProjectFormValues = {
   title: string;
@@ -62,6 +63,58 @@ type Props = {
   managerUsers: any[];
   memberUsers: any[];
 };
+
+
+const technologyOptions = [
+  // Frontend
+  { label: "React.js", value: "React.js" },
+  { label: "Next.js", value: "Next.js" },
+  { label: "Vue.js", value: "Vue.js" },
+  { label: "Nuxt.js", value: "Nuxt.js" },
+  { label: "Angular", value: "Angular" },
+  { label: "TypeScript", value: "TypeScript" },
+  { label: "JavaScript", value: "JavaScript" },
+  { label: "Tailwind CSS", value: "Tailwind CSS" },
+  { label: "Redux", value: "Redux" },
+  { label: "Zustand", value: "Zustand" },
+
+  // Backend
+  { label: "Node.js", value: "Node.js" },
+  { label: "Express.js", value: "Express.js" },
+  { label: "NestJS", value: "NestJS" },
+  { label: "Django", value: "Django" },
+  { label: "Laravel", value: "Laravel" },
+
+  // Database
+  { label: "MongoDB", value: "MongoDB" },
+  { label: "PostgreSQL", value: "PostgreSQL" },
+  { label: "MySQL", value: "MySQL" },
+  { label: "Prisma ORM", value: "Prisma ORM" },
+  { label: "Mongoose", value: "Mongoose" },
+
+  // Mobile
+  {
+    label: "React Native",
+    value: "React Native",
+  },
+  { label: "Flutter", value: "Flutter" },
+
+  // Cloud & DevOps
+  { label: "Docker", value: "Docker" },
+  { label: "AWS", value: "AWS" },
+  { label: "Firebase", value: "Firebase" },
+  { label: "Supabase", value: "Supabase" },
+  { label: "Vercel", value: "Vercel" },
+
+  // Others
+  { label: "GraphQL", value: "GraphQL" },
+  { label: "REST API", value: "REST API" },
+  { label: "Socket.IO", value: "Socket.IO" },
+  { label: "JWT", value: "JWT" },
+  { label: "Git", value: "Git" },
+];
+
+
 
 export function ProjectForm({
   register,
@@ -291,91 +344,21 @@ export function ProjectForm({
             register={register("members")}
           /> */}
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-zinc-300">Members</label>
+ 
 
-            <Controller
-              control={control}
-              name="members"
-              render={({ field }) => (
-                <Select
-                  isMulti
-                  options={memberUsers?.map((user: any) => ({
-                    label: user.name,
-                    value: user._id,
-                  }))}
-                  value={memberUsers
-                    ?.filter((user: any) => field.value?.includes(user._id))
-                    ?.map((user: any) => ({
-                      label: user.name,
-                      value: user._id,
-                    }))}
-                  onChange={(selected: any) => {
-                    field.onChange(selected.map((item: any) => item.value));
-                  }}
-                  className="text-sm"
-                  classNamePrefix="select"
-                  placeholder="Select Members"
-                  styles={{
-                    control: (base) => ({
-                      ...base,
-                      backgroundColor: "#18181B",
-                      borderColor: "rgba(255,255,255,0.08)",
-                      minHeight: "48px",
-                      borderRadius: "16px",
-                      boxShadow: "none",
-                    }),
-
-                    menu: (base) => ({
-                      ...base,
-                      backgroundColor: "#18181B",
-                      borderRadius: "16px",
-                      overflow: "hidden",
-                    }),
-
-                    option: (base, state) => ({
-                      ...base,
-                      backgroundColor: state.isFocused ? "#27272A" : "#18181B",
-                      color: "white",
-                      cursor: "pointer",
-                    }),
-
-                    multiValue: (base) => ({
-                      ...base,
-                      backgroundColor: "#2563EB",
-                      borderRadius: "10px",
-                    }),
-
-                    multiValueLabel: (base) => ({
-                      ...base,
-                      color: "white",
-                    }),
-
-                    multiValueRemove: (base) => ({
-                      ...base,
-                      color: "white",
-                      cursor: "pointer",
-                    }),
-
-                    input: (base) => ({
-                      ...base,
-                      color: "white",
-                    }),
-
-                    singleValue: (base) => ({
-                      ...base,
-                      color: "white",
-                    }),
-
-                    placeholder: (base) => ({
-                      ...base,
-                      color: "#71717A",
-                    }),
-                  }}
-                />
-              )}
-            />
-          </div>
+          <MultiSelectField
+  label="Members"
+  name="members"
+  control={control}
+  options={memberUsers?.map(
+    (user: any) => ({
+      label: user.name,
+      value: user._id,
+    })
+  )}
+  placeholder="Select Members"
+  icon={<HiOutlineUsers className="text-lg" />}
+/>
 
           <div className="lg:col-span-2">
             <CustomFormField
@@ -386,14 +369,35 @@ export function ProjectForm({
             />
           </div>
 
-          <div className="lg:col-span-2">
-            <CustomFormField
-              label="Technologies"
-              placeholder="React, Node.js, MongoDB"
-              icon={<HiOutlineSparkles className="text-lg" />}
-              register={register("technologies")}
-            />
-          </div>
+ 
+
+
+
+ <MultiSelectField
+  label="Technologies"
+  name="technologies"
+  control={control}
+  options={technologyOptions}
+  placeholder="Select Technologies"
+  icon={
+    <HiOutlineSparkles className="text-lg" />
+  }
+/>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
           <div className="lg:col-span-2">
             <div className="flex items-center gap-3 rounded-2xl border border-white/[0.06] bg-white/[0.03] px-4 py-3">
