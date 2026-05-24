@@ -18,6 +18,7 @@ import {
 import { useGetAllUsers } from "@/store/hooks/user.hook";
 import toast from "react-hot-toast";
 import { ProjectCardSkeleton } from "./_components/ProjectCardSkeleton";
+import { NoProjectsFound } from "./_components/NoProjectsFound";
 
 export default function ProjectsPage() {
   const [showForm, setShowForm] = useState(false);
@@ -140,15 +141,21 @@ export default function ProjectsPage() {
           </motion.div>
         )}
       </AnimatePresence>
-      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-        {projectsLoading
-          ? Array.from({ length: 6 }).map((_, index) => (
-              <ProjectCardSkeleton key={index} />
-            ))
-          : allProjectData.map((project: any) => (
-              <ProjectCard key={project._id} project={project} />
-            ))}
-      </div>
+      {projectsLoading ? (
+        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+          {Array.from({ length: 6 }).map((_, index) => (
+            <ProjectCardSkeleton key={index} />
+          ))}
+        </div>
+      ) : allProjectData?.length === 0 ? (
+        <NoProjectsFound onCreate={() => setShowForm(true)} />
+      ) : (
+        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+          {allProjectData.map((project: any) => (
+            <ProjectCard key={project._id} project={project} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
