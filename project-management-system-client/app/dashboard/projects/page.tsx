@@ -12,7 +12,7 @@ import {
 import { ProjectForm, ProjectFormValues } from "./_components/ProjectForm";
 import { ProjectCard } from "./_components/ProjectCard";
 import { useCreateProject } from "@/store/hooks/project.hook";
- 
+import { useGetAllUsers } from "@/store/hooks/user.hook";
 
 const mockProjects = [
   {
@@ -69,9 +69,22 @@ export default function ProjectsPage() {
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
     reset,
   } = useForm<ProjectFormValues>();
+
+  const { users } = useGetAllUsers({
+    limit: 100,
+  });
+  console.log(users);
+
+  const managerUsers =
+    users?.filter((user: any) => user.role === "manager") || [];
+  console.log(managerUsers);
+
+  const memberUsers =
+    users?.filter((user: any) => user.role === "member") || [];
 
   const onSubmit = async (data: ProjectFormValues) => {
     const start = new Date(data.startDate);
@@ -81,6 +94,8 @@ export default function ProjectsPage() {
       alert("End date must be greater than start date");
       return;
     }
+
+    // console.log("Form Data:", data);
 
     const payload = {
       ...data,
@@ -92,20 +107,25 @@ export default function ProjectsPage() {
       isPublic: data.isPublic ?? false,
       currency: data.currency || "USD",
       tags: data.tags
-        ? data.tags.split(",").map((item) => item.trim()).filter(Boolean)
+        ? data.tags
+            .split(",")
+            .map((item) => item.trim())
+            .filter(Boolean)
         : [],
       technologies: data.technologies
-        ? data.technologies.split(",").map((item) => item.trim()).filter(Boolean)
+        ? data.technologies
+            .split(",")
+            .map((item) => item.trim())
+            .filter(Boolean)
         : [],
-      members: data.members
-        ? data.members.split(",").map((item) => item.trim()).filter(Boolean)
-        : [],
+      members: data.members || [],
     };
+    console.log("Payload:", payload);
 
     await create(payload);
 
-    // reset();
-    // setShowForm(false);
+    reset();
+    setShowForm(false);
   };
 
   return (
@@ -150,6 +170,9 @@ export default function ProjectsPage() {
               errors={errors}
               reset={reset}
               onSubmit={onSubmit}
+              control={control}
+              managerUsers={managerUsers}
+              memberUsers={memberUsers}
             />
           </motion.div>
         )}

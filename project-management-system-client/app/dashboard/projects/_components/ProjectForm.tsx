@@ -1,10 +1,13 @@
 "use client";
 
+import Select from "react-select";
+
 import { useState } from "react";
 import {
   UseFormRegister,
   UseFormHandleSubmit,
   FieldErrors,
+  Controller,
 } from "react-hook-form";
 import {
   HiOutlineFolder,
@@ -21,8 +24,10 @@ import {
   HiOutlineChartBar,
   HiOutlineStatusOnline,
   HiOutlineSparkles,
+  HiOutlineUsers,
 } from "react-icons/hi";
 import { CustomFormField } from "@/components/form/CustomFormField";
+import { useGetAllUsers } from "@/store/hooks/user.hook";
 
 export type ProjectFormValues = {
   title: string;
@@ -53,18 +58,25 @@ type Props = {
   errors: FieldErrors<ProjectFormValues>;
   reset: () => void;
   onSubmit: (data: ProjectFormValues) => void;
+  control: any;
+  managerUsers: any[];
+  memberUsers: any[];
 };
 
 export function ProjectForm({
   register,
   handleSubmit,
+  control,
   errors,
   reset,
   onSubmit,
+  managerUsers,
+  memberUsers,
 }: Props) {
   const [tagInput, setTagInput] = useState("");
   const [techInput, setTechInput] = useState("");
   const [memberInput, setMemberInput] = useState("");
+  console.log(memberUsers);
 
   return (
     <>
@@ -253,19 +265,117 @@ export function ProjectForm({
             error={errors.totalTaskCount}
           />
 
-          <CustomFormField
+          {/* <CustomFormField
             label="Project Manager ID"
             placeholder="ObjectId..."
             icon={<HiOutlineUser className="text-lg" />}
             register={register("projectManager")}
-          />
+          /> */}
 
           <CustomFormField
+            label="Project Manager"
+            select
+            placeholder="Select Manager"
+            register={register("projectManager")}
+            options={managerUsers?.map((user: any) => ({
+              label: user.name,
+              value: user._id,
+            }))}
+            icon={<HiOutlineUser />}
+          />
+
+          {/* <CustomFormField
             label="Members"
             placeholder="Comma separated ObjectIds..."
             icon={<HiOutlineUserGroup className="text-lg" />}
             register={register("members")}
-          />
+          /> */}
+
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-zinc-300">Members</label>
+
+            <Controller
+              control={control}
+              name="members"
+              render={({ field }) => (
+                <Select
+                  isMulti
+                  options={memberUsers?.map((user: any) => ({
+                    label: user.name,
+                    value: user._id,
+                  }))}
+                  value={memberUsers
+                    ?.filter((user: any) => field.value?.includes(user._id))
+                    ?.map((user: any) => ({
+                      label: user.name,
+                      value: user._id,
+                    }))}
+                  onChange={(selected: any) => {
+                    field.onChange(selected.map((item: any) => item.value));
+                  }}
+                  className="text-sm"
+                  classNamePrefix="select"
+                  placeholder="Select Members"
+                  styles={{
+                    control: (base) => ({
+                      ...base,
+                      backgroundColor: "#18181B",
+                      borderColor: "rgba(255,255,255,0.08)",
+                      minHeight: "48px",
+                      borderRadius: "16px",
+                      boxShadow: "none",
+                    }),
+
+                    menu: (base) => ({
+                      ...base,
+                      backgroundColor: "#18181B",
+                      borderRadius: "16px",
+                      overflow: "hidden",
+                    }),
+
+                    option: (base, state) => ({
+                      ...base,
+                      backgroundColor: state.isFocused ? "#27272A" : "#18181B",
+                      color: "white",
+                      cursor: "pointer",
+                    }),
+
+                    multiValue: (base) => ({
+                      ...base,
+                      backgroundColor: "#2563EB",
+                      borderRadius: "10px",
+                    }),
+
+                    multiValueLabel: (base) => ({
+                      ...base,
+                      color: "white",
+                    }),
+
+                    multiValueRemove: (base) => ({
+                      ...base,
+                      color: "white",
+                      cursor: "pointer",
+                    }),
+
+                    input: (base) => ({
+                      ...base,
+                      color: "white",
+                    }),
+
+                    singleValue: (base) => ({
+                      ...base,
+                      color: "white",
+                    }),
+
+                    placeholder: (base) => ({
+                      ...base,
+                      color: "#71717A",
+                    }),
+                  }}
+                />
+              )}
+            />
+          </div>
 
           <div className="lg:col-span-2">
             <CustomFormField

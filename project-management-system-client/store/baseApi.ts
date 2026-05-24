@@ -99,6 +99,8 @@ export const baseApi = createApi({
     "Sprint",
     "Comment",
     "User",
+    "TimeLog",
+    "ActivityLog",
   ],
   endpoints: () => ({}),
 });
