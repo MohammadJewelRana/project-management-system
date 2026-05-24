@@ -11,94 +11,63 @@ import {
   HiOutlineChevronDown,
   HiOutlineChevronUp,
 } from "react-icons/hi";
+ 
 
-import { TeamMemberForm } from "./_components/team-member-form";
-
-import { TeamSection } from "./_components/team-section";
-
-const mockUsers = [
-  {
-    _id: "1",
-    name: "Md Jewel Rana",
-    email: "superadmin@gmail.com",
-    role: "superAdmin",
-    designation: "System Administrator",
-    department: "Management",
-    status: "active",
-  },
-
-  {
-    _id: "2",
-    name: "Admin User",
-    email: "admin@gmail.com",
-    role: "admin",
-    designation: "Project Admin",
-    department: "Operations",
-    status: "active",
-  },
-
-  {
-    _id: "3",
-    name: "Project Manager",
-    email: "manager@gmail.com",
-    role: "manager",
-    designation: "Team Lead",
-    department: "Development",
-    status: "active",
-  },
-
-  {
-    _id: "4",
-    name: "Frontend Developer",
-    email: "member@gmail.com",
-    role: "member",
-    designation: "Frontend Engineer",
-    department: "Engineering",
-    status: "active",
-  },
-
-  {
-    _id: "5",
-    name: "Backend Developer",
-    email: "backend@gmail.com",
-    role: "member",
-    designation: "Backend Engineer",
-    department: "Engineering",
-    status: "active",
-  },
-];
+import { useGetAllUsers } from "@/store/hooks/user.hook";
+import LoadingSpinner from "@/app/loading";
+import { TeamMemberForm } from "./_components/TeamMemberForm";
+import { TeamSection } from "./_components/TeamSection";
 
 const TeamPage = () => {
   const [showForm, setShowForm] =
     useState(false);
 
+  // FETCH USERS
+  const {
+    users,
+    isLoading,
+  } = useGetAllUsers({
+    page: 1,
+    limit: 100,
+  });
+
   // FILTER USERS
   const superAdmins =
-    mockUsers.filter(
-      (user) =>
-        user.role ===
+    users?.filter(
+      (user: any) =>
+        user?.role ===
         "superAdmin"
-    );
+    ) || [];
 
   const admins =
-    mockUsers.filter(
-      (user) =>
-        user.role === "admin"
-    );
+    users?.filter(
+      (user: any) =>
+        user?.role === "admin"
+    ) || [];
 
   const managers =
-    mockUsers.filter(
-      (user) =>
-        user.role ===
+    users?.filter(
+      (user: any) =>
+        user?.role ===
         "manager"
-    );
+    ) || [];
 
   const members =
-    mockUsers.filter(
-      (user) =>
-        user.role ===
+    users?.filter(
+      (user: any) =>
+        user?.role ===
         "member"
+    ) || [];
+
+  // LOADING
+  if (isLoading) {
+    return (
+      <LoadingSpinner
+        fullScreen
+        text="Loading Team..."
+      />
     );
+  }
 
   return (
     <div className="space-y-8">
@@ -191,7 +160,7 @@ const TeamPage = () => {
       </AnimatePresence>
 
       {/* TEAM SECTIONS */}
-      <div className="space-y-8">
+      <div className="space-y-10">
         <TeamSection
           title="Super Admin"
           users={superAdmins}

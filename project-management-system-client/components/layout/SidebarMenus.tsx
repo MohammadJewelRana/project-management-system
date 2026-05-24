@@ -119,11 +119,7 @@ export const sidebarMenus = {
       href: "/dashboard/sprints",
       icon: HiOutlineLightningBolt,
     },
-    {
-      title: "Team",
-      href: "/dashboard/team",
-      icon: HiOutlineUsers,
-    },
+
     {
       title: "Activity",
       href: "/dashboard/activity",
