@@ -1,5 +1,3 @@
-// app/dashboard/team/page.tsx
-
 "use client";
 
 import { useState } from "react";
@@ -11,63 +9,32 @@ import {
   HiOutlineChevronDown,
   HiOutlineChevronUp,
 } from "react-icons/hi";
- 
 
 import { useGetAllUsers } from "@/store/hooks/user.hook";
-import LoadingSpinner from "@/app/loading";
+
 import { TeamMemberForm } from "./_components/TeamMemberForm";
+
 import { TeamSection } from "./_components/TeamSection";
+import { TeamCardSkeleton } from "./_components/TeamCardSkeleton";
 
 const TeamPage = () => {
-  const [showForm, setShowForm] =
-    useState(false);
+  const [showForm, setShowForm] = useState(false);
 
   // FETCH USERS
-  const {
-    users,
-    isLoading,
-  } = useGetAllUsers({
+  const { users, isLoading } = useGetAllUsers({
     page: 1,
     limit: 100,
   });
 
   // FILTER USERS
   const superAdmins =
-    users?.filter(
-      (user: any) =>
-        user?.role ===
-        "superAdmin"
-    ) || [];
+    users?.filter((user: any) => user?.role === "superAdmin") || [];
 
-  const admins =
-    users?.filter(
-      (user: any) =>
-        user?.role === "admin"
-    ) || [];
+  const admins = users?.filter((user: any) => user?.role === "admin") || [];
 
-  const managers =
-    users?.filter(
-      (user: any) =>
-        user?.role ===
-        "manager"
-    ) || [];
+  const managers = users?.filter((user: any) => user?.role === "manager") || [];
 
-  const members =
-    users?.filter(
-      (user: any) =>
-        user?.role ===
-        "member"
-    ) || [];
-
-  // LOADING
-  if (isLoading) {
-    return (
-      <LoadingSpinner
-        fullScreen
-        text="Loading Team..."
-      />
-    );
-  }
+  const members = users?.filter((user: any) => user?.role === "member") || [];
 
   return (
     <div className="space-y-8">
@@ -80,18 +47,13 @@ const TeamPage = () => {
           </h1>
 
           <p className="mt-2 text-sm text-zinc-500">
-            Manage all team
-            members and roles
+            Manage all team members and roles
           </p>
         </div>
 
         {/* BUTTON */}
         <button
-          onClick={() =>
-            setShowForm(
-              !showForm
-            )
-          }
+          onClick={() => setShowForm(!showForm)}
           className="
             group
             flex
@@ -114,9 +76,7 @@ const TeamPage = () => {
         >
           <HiOutlinePlus className="text-lg" />
 
-          {showForm
-            ? "Close Form"
-            : "Add Team Member"}
+          {showForm ? "Close Form" : "Add Team Member"}
 
           {showForm ? (
             <HiOutlineChevronUp className="text-lg" />
@@ -159,32 +119,58 @@ const TeamPage = () => {
         )}
       </AnimatePresence>
 
-      {/* TEAM SECTIONS */}
-      <div className="space-y-10">
-        <TeamSection
-          title="Super Admin"
-          users={superAdmins}
-          badgeColor="bg-red-500/10 text-red-400"
-        />
+      {/* LOADING SKELETON */}
+      {isLoading ? (
+        <div className="space-y-10">
+          {/* SECTION 1 */}
+          <div className="space-y-5">
+            <div className="h-8 w-48 animate-pulse rounded-xl bg-white/[0.06]" />
 
-        <TeamSection
-          title="Admins"
-          users={admins}
-          badgeColor="bg-orange-500/10 text-orange-400"
-        />
+            <TeamCardSkeleton count={2} />
+          </div>
 
-        <TeamSection
-          title="Project Managers"
-          users={managers}
-          badgeColor="bg-blue-500/10 text-blue-400"
-        />
+          {/* SECTION 2 */}
+          <div className="space-y-5">
+            <div className="h-8 w-40 animate-pulse rounded-xl bg-white/[0.06]" />
 
-        <TeamSection
-          title="Team Members"
-          users={members}
-          badgeColor="bg-emerald-500/10 text-emerald-400"
-        />
-      </div>
+            <TeamCardSkeleton count={3} />
+          </div>
+
+          {/* SECTION 3 */}
+          <div className="space-y-5">
+            <div className="h-8 w-56 animate-pulse rounded-xl bg-white/[0.06]" />
+
+            <TeamCardSkeleton count={4} />
+          </div>
+        </div>
+      ) : (
+        /* TEAM SECTIONS */
+        <div className="space-y-10">
+          <TeamSection
+            title="Super Admin"
+            users={superAdmins}
+            badgeColor="bg-red-500/10 text-red-400"
+          />
+
+          <TeamSection
+            title="Admins"
+            users={admins}
+            badgeColor="bg-orange-500/10 text-orange-400"
+          />
+
+          <TeamSection
+            title="Project Managers"
+            users={managers}
+            badgeColor="bg-blue-500/10 text-blue-400"
+          />
+
+          <TeamSection
+            title="Team Members"
+            users={members}
+            badgeColor="bg-emerald-500/10 text-emerald-400"
+          />
+        </div>
+      )}
     </div>
   );
 };
