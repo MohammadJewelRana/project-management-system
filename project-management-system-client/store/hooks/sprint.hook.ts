@@ -13,8 +13,7 @@ import {
 
 // Create Sprint
 export const useCreateSprint = () => {
-  const [createSprint, { isLoading, error }] =
-    useCreateSprintMutation();
+  const [createSprint, { isLoading, error }] = useCreateSprintMutation();
 
   const create = async (data: any) => {
     try {
@@ -36,17 +35,21 @@ export const useCreateSprint = () => {
 
 // Get All Sprints
 export const useGetAllSprints = (filters: any) => {
-  const { data, error, isLoading } =
-    useGetAllSprintsQuery(filters);
+  const { data, error, isLoading } = useGetAllSprintsQuery(filters);
 
   let sprints: any[] = [];
 
+  let meta = null;
+
   if (data?.success) {
-    sprints = data.data;
+    sprints = data.data?.result || [];
+
+    meta = data.data?.meta || null;
   }
 
   return {
     sprints,
+    meta,
     isLoading,
     isError: !!error,
   };
@@ -54,10 +57,9 @@ export const useGetAllSprints = (filters: any) => {
 
 // Get Single Sprint
 export const useGetSingleSprint = (id: string) => {
-  const { data, error, isLoading } =
-    useGetSingleSprintQuery(id, {
-      skip: !id,
-    });
+  const { data, error, isLoading } = useGetSingleSprintQuery(id, {
+    skip: !id,
+  });
 
   let sprint = null;
 
@@ -78,8 +80,7 @@ export const useGetSingleSprint = (id: string) => {
 
 // Update Sprint
 export const useUpdateSprint = () => {
-  const [updateSprint, { isLoading, error }] =
-    useUpdateSprintMutation();
+  const [updateSprint, { isLoading, error }] = useUpdateSprintMutation();
 
   const update = async (id: string, data: any) => {
     try {
@@ -101,8 +102,7 @@ export const useUpdateSprint = () => {
 
 // Delete Sprint
 export const useDeleteSprint = () => {
-  const [deleteSprint, { isLoading, error }] =
-    useDeleteSprintMutation();
+  const [deleteSprint, { isLoading, error }] = useDeleteSprintMutation();
 
   const remove = async (id: string) => {
     try {
@@ -127,10 +127,7 @@ export const useChangeSprintStatus = () => {
   const [changeSprintStatus, { isLoading, error }] =
     useChangeSprintStatusMutation();
 
-  const changeStatus = async (
-    id: string,
-    status: string
-  ) => {
+  const changeStatus = async (id: string, status: string) => {
     try {
       await changeSprintStatus({
         id,
@@ -153,13 +150,9 @@ export const useChangeSprintStatus = () => {
 
 // Add Task To Sprint
 export const useAddTaskToSprint = () => {
-  const [addTaskToSprint, { isLoading, error }] =
-    useAddTaskToSprintMutation();
+  const [addTaskToSprint, { isLoading, error }] = useAddTaskToSprintMutation();
 
-  const add = async (
-    id: string,
-    taskId: string
-  ) => {
+  const add = async (id: string, taskId: string) => {
     try {
       await addTaskToSprint({
         id,
@@ -182,15 +175,10 @@ export const useAddTaskToSprint = () => {
 
 // Remove Task From Sprint
 export const useRemoveTaskFromSprint = () => {
-  const [
-    removeTaskFromSprint,
-    { isLoading, error },
-  ] = useRemoveTaskFromSprintMutation();
+  const [removeTaskFromSprint, { isLoading, error }] =
+    useRemoveTaskFromSprintMutation();
 
-  const remove = async (
-    id: string,
-    taskId: string
-  ) => {
+  const remove = async (id: string, taskId: string) => {
     try {
       await removeTaskFromSprint({
         id,
