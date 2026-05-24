@@ -2,153 +2,250 @@
 
 "use client";
 
+import toast from "react-hot-toast";
+
+import { useForm } from "react-hook-form";
+
 import {
   HiOutlineMail,
   HiOutlineUser,
   HiOutlineOfficeBuilding,
   HiOutlineBriefcase,
+  HiOutlinePhone,
+  HiOutlineLockClosed,
+  HiOutlineGlobeAlt,
 } from "react-icons/hi";
 
-import { useForm } from "react-hook-form";
 import { CustomFormField } from "@/components/form/CustomFormField";
- 
 
-export const TeamMemberForm =
-  () => {
-    const {
-      register,
-      handleSubmit,
-    } = useForm();
+import { useCreateUserMutation } from "@/store/services/user.api";
+import { designationOptions } from "@/constants/designationOptions";
+import { MultiSelectField } from "@/components/form/MultiSelectInputField";
+import { skillOptions } from "@/constants/skillOptions";
+import { departmentOptions } from "@/constants/departmentOptions";
 
-    const onSubmit = (
-      data: any
-    ) => {
-      console.log(data);
-    };
+export const TeamMemberForm = () => {
+  const [createUser, { isLoading }] = useCreateUserMutation();
 
-    return (
-      <form
-        onSubmit={handleSubmit(
-          onSubmit
-        )}
-        className="p-5 sm:p-6"
-      >
-        {/* HEADER */}
-        <div className="mb-6">
-          <h2 className="text-xl font-semibold text-white">
-            Add Team Member
-          </h2>
+  const {
+    register,
 
-          <p className="mt-1 text-sm text-zinc-500">
-            Create a new user
-            and assign role
-          </p>
-        </div>
+    handleSubmit,
 
-        {/* FORM GRID */}
-        <div className="grid gap-5 md:grid-cols-2">
-          <CustomFormField
-            label="Full Name"
-            placeholder="John Doe"
-            register={register(
-              "name"
-            )}
-            icon={
-              <HiOutlineUser />
-            }
-          />
+    control,
 
-          <CustomFormField
-            label="Email"
-            type="email"
-            placeholder="john@example.com"
-            register={register(
-              "email"
-            )}
-            icon={
-              <HiOutlineMail />
-            }
-          />
+    reset,
+  } = useForm();
 
-          <CustomFormField
-            label="Department"
-            placeholder="Engineering"
-            register={register(
-              "department"
-            )}
-            icon={
-              <HiOutlineOfficeBuilding />
-            }
-          />
+  const onSubmit = async (data: any) => {
+    try {
+      const payload = {
+        ...data,
 
-          <CustomFormField
-            label="Designation"
-            placeholder="Frontend Developer"
-            register={register(
-              "designation"
-            )}
-            icon={
-              <HiOutlineBriefcase />
-            }
-          />
+        skills: data.skills || [],
+      };
 
-          {/* ROLE */}
-          <CustomFormField
-            label="Role"
-            select
-            register={register(
-              "role"
-            )}
-            options={[
-              {
-                label:
-                  "Admin",
-                value:
-                  "admin",
-              },
+      await createUser(payload).unwrap();
 
-              {
-                label:
-                  "Manager",
-                value:
-                  "manager",
-              },
+      toast.success("Team member created successfully");
 
-              {
-                label:
-                  "Member",
-                value:
-                  "member",
-              },
-            ]}
-          />
-        </div>
+      reset();
+    } catch (error: any) {
+      console.log(error);
 
-        {/* BUTTON */}
-        <div className="mt-6 flex justify-end">
-          <button
-            type="submit"
-            className="
+      toast.error(error?.data?.message || "Failed to create member");
+    }
+  };
+
+  return (
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="
+          rounded-[32px]
+          border
+          border-white/[0.06]
+          bg-[#111113]
+          p-5
+          sm:p-6
+        "
+    >
+      {/* HEADER */}
+      <div className="mb-8">
+        <h2 className="text-2xl font-semibold text-white">Add Team Member</h2>
+
+        <p className="mt-2 text-sm text-zinc-500">
+          Create and manage team member access
+        </p>
+      </div>
+
+      {/* FORM GRID */}
+      <div className="grid gap-5 md:grid-cols-2">
+        {/* NAME */}
+        <CustomFormField
+          label="Full Name"
+          placeholder="John Doe"
+          register={register("name")}
+          icon={<HiOutlineUser />}
+        />
+
+        {/* USERNAME */}
+        <CustomFormField
+          label="Username"
+          placeholder="john_doe"
+          register={register("username")}
+          icon={<HiOutlineUser />}
+        />
+
+        {/* EMAIL */}
+        <CustomFormField
+          label="Email"
+          type="email"
+          placeholder="john@example.com"
+          register={register("email")}
+          icon={<HiOutlineMail />}
+        />
+
+        {/* PASSWORD */}
+        <CustomFormField
+          label="Password"
+          type="password"
+          placeholder="******"
+          register={register("password")}
+          icon={<HiOutlineLockClosed />}
+        />
+
+        {/* PHONE */}
+        <CustomFormField
+          label="Phone"
+          placeholder="+8801XXXXXXXXX"
+          register={register("phone")}
+          icon={<HiOutlinePhone />}
+        />
+
+        {/* TIMEZONE */}
+        <CustomFormField
+          label="Timezone"
+          placeholder="Asia/Dhaka"
+          register={register("timezone")}
+          icon={<HiOutlineGlobeAlt />}
+        />
+
+        {/* DEPARTMENT */}
+        <CustomFormField
+          label="Department"
+          select
+          register={register("department")}
+          icon={<HiOutlineOfficeBuilding />}
+          options={departmentOptions}
+        />
+
+        {/* DESIGNATION */}
+        <CustomFormField
+          label="Designation"
+          select
+          register={register("designation")}
+          icon={<HiOutlineBriefcase />}
+          options={designationOptions}
+        />
+
+        {/* ROLE */}
+        <CustomFormField
+          label="Role"
+          select
+          register={register("role")}
+          options={[
+            {
+              label: "Admin",
+              value: "admin",
+            },
+
+            {
+              label: "Manager",
+              value: "manager",
+            },
+
+            {
+              label: "Member",
+              value: "member",
+            },
+          ]}
+        />
+
+        {/* STATUS */}
+        <CustomFormField
+          label="Status"
+          select
+          register={register("status")}
+          options={[
+            {
+              label: "Active",
+              value: "active",
+            },
+
+            {
+              label: "Inactive",
+              value: "inactive",
+            },
+
+            {
+              label: "Blocked",
+              value: "blocked",
+            },
+          ]}
+        />
+      </div>
+
+      {/* SKILLS */}
+      <div className="mt-5">
+        <MultiSelectField
+          label="Skills"
+          name="skills"
+          control={control}
+          options={skillOptions}
+          placeholder="Select Skills"
+        />
+      </div>
+
+      {/* BIO */}
+      <div className="mt-5">
+        <CustomFormField
+          label="Bio"
+          textarea
+          rows={5}
+          placeholder="Write short bio..."
+          register={register("bio")}
+        />
+      </div>
+
+      {/* BUTTON */}
+      <div className="mt-8 flex justify-end">
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="
               flex
-              h-11
+              h-12
               items-center
               justify-center
               rounded-2xl
               bg-gradient-to-r
               from-blue-500
-              to-indigo-500
-              px-6
+              via-indigo-500
+              to-violet-500
+              px-8
               text-sm
               font-medium
               text-white
               transition-all
               duration-300
               hover:scale-[1.02]
+              disabled:cursor-not-allowed
+              disabled:opacity-50
             "
-          >
-            Create Member
-          </button>
-        </div>
-      </form>
-    );
-  };
+        >
+          {isLoading ? "Creating..." : "Create Member"}
+        </button>
+      </div>
+    </form>
+  );
+};
