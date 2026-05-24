@@ -1,71 +1,111 @@
 import { Request, Response } from "express";
+
 import httpStatus from "http-status";
 
 import sendResponse from "../../utils/sendResponse";
 
-import { SurahService } from "./project.service";
 import { catchAsync } from "../../utils/catchAsync";
-import { request } from "http";
 
-const getAllSurahs = catchAsync(async (req: Request, res: Response) => {
-  const result = await SurahService.getAllSurahs(req.query);
+import { ProjectService } from "./project.service";
 
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: "Surahs retrieved successfully",
-    data: result.data,
-    meta: result.meta,
-  });
-});
-
-//  Get Single Surah
-const getSingleSurah = catchAsync(async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const { page, limit } = req.query;
-
-  const result = await SurahService.getSingleSurah(Number(id), {
-    page: page as string,
-    limit: limit as string,
-  });
+// CREATE PROJECT
+const createProject = catchAsync(async (req: Request, res: Response) => {
+  const result = await ProjectService.createProject(req.body, req.user);
 
   sendResponse(res, {
-    statusCode: httpStatus.OK,
+    statusCode: httpStatus.CREATED,
     success: true,
-    message: "Surah retrieved successfully",
+    message: "Project created successfully",
     data: result,
   });
 });
 
-//  Search Ayah
-const searchAyah = catchAsync(async (req: Request, res: Response) => {
-  const { q, surahId } = req.query;
+// GET ALL PROJECTS
+const getAllProjects = catchAsync(async (req: Request, res: Response) => {
+  const result = await ProjectService.getAllProjects(req.query);
 
-  const query = typeof q === "string" ? q.trim() : "";
-  const parsedSurahId =
-    typeof surahId === "string" ? Number(surahId) : undefined;
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Projects retrieved successfully",
+    data: result,
+  });
+});
 
-  if (!query) {
-    return sendResponse(res, {
+// GET SINGLE PROJECT
+const getSingleProject = catchAsync(async (req: Request, res: Response) => {
+  const result = await ProjectService.getSingleProject(req.params.id as string);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Project retrieved successfully",
+    data: result,
+  });
+});
+
+// UPDATE PROJECT
+const updateProject = catchAsync(async (req: Request, res: Response) => {
+  const result = await ProjectService.updateProject(req.params.id as string, req.body);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Project updated successfully",
+    data: result,
+  });
+});
+
+// DELETE PROJECT
+const deleteProject = catchAsync(async (req: Request, res: Response) => {
+  const result = await ProjectService.deleteProject(req.params.id as string);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Project deleted successfully",
+    data: result,
+  });
+});
+
+// ADD MEMBER
+const addMemberToProject = catchAsync(async (req: Request, res: Response) => {
+  const result = await ProjectService.addMemberToProject(
+    req.params.id as string,
+    req.body.memberId as string
+  );
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Member added successfully",
+    data: result,
+  });
+});
+
+// REMOVE MEMBER
+const removeMemberFromProject = catchAsync(
+  async (req: Request, res: Response) => {
+    const result = await ProjectService.removeMemberFromProject(
+      req.params.id as string,
+      req.body.memberId as string
+    );
+
+    sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
-      message: "Empty query",
-      data: [],
+      message: "Member removed successfully",
+      data: result,
     });
   }
+);
 
-  const result = await SurahService.searchAyah(query, parsedSurahId);
-
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: "Search results retrieved successfully",
-    data: result,
-  });
-});
-
-export const SurahController = {
-  getAllSurahs,
-  getSingleSurah,
-  searchAyah,
+export const ProjectController = {
+  createProject,
+  getAllProjects,
+  getSingleProject,
+  updateProject,
+  deleteProject,
+  addMemberToProject,
+  removeMemberFromProject,
 };

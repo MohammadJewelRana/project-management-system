@@ -1,12 +1,33 @@
-import express, { Application, NextFunction, Request, Response } from "express";
+import express, { Application, Request, Response } from "express";
+
 import cors from "cors";
-import notFound from "./middleware/notFound";
+
 import router from "./routes";
+
+import swaggerDocs from "./config/swagger";
+
 import globalErrorHandler from "./middleware/globalErrorHandler";
+
+import notFound from "./middleware/notFound";
 
 const app: Application = express();
 
-//Middlewares
+/* ======================================================
+   PARSERS
+====================================================== */
+
+app.use(express.json());
+
+app.use(
+  express.urlencoded({
+    extended: true,
+  })
+);
+
+/* ======================================================
+   CORS
+====================================================== */
+
 const allowedOrigins = [
   "http://localhost:3000",
   "http://localhost:3001",
@@ -14,32 +35,53 @@ const allowedOrigins = [
 ];
 
 const corsOptions = {
-  origin: function (origin: string | undefined, callback: any) {
+  origin: (origin: string | undefined, callback: any) => {
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
       callback(new Error("Not allowed by CORS"));
     }
   },
+
   credentials: true,
 };
 
 app.use(cors(corsOptions));
-// app.options('*', cors(corsOptions));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+
+/* ======================================================
+   SWAGGER DOCS
+====================================================== */
+
+swaggerDocs(app);
+
+/* ======================================================
+   API ROUTES
+====================================================== */
 
 app.use("/api", router);
 
-// base route
+/* ======================================================
+   BASE ROUTE
+====================================================== */
+
 app.get("/", (_req: Request, res: Response) => {
   res.status(200).json({
     success: true,
-    message: "Project management Backend Server is running ",
+
+    message: "Project Management Backend Server Running",
   });
 });
 
+/* ======================================================
+   GLOBAL ERROR HANDLER
+====================================================== */
+
 app.use(globalErrorHandler);
+
+/* ======================================================
+   NOT FOUND
+====================================================== */
+
 app.use(notFound);
 
 export default app;

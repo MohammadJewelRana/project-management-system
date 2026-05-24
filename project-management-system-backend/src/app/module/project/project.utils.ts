@@ -1,8 +1,6 @@
-export const formatSurahResponse = (data: any) => {
-  return {
-    id: data.id,
-    name: data.name,
-    transliteration: data.transliteration,
-    total_verses: data.total_verses,
-  };
+export const generateSlug = (title: string) => {
+  return title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 };

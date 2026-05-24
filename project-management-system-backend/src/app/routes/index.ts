@@ -1,12 +1,52 @@
 import { Router } from "express";
-import { SurahRoutes } from "../module/project/project.route";
+import { ProjectRoutes } from "../module/project/project.route";
+import { AuthRoutes } from "../module/auth/auth.route";
+import { UserRoutes } from "../module/user/user.route";
+import { SprintRoutes } from "../module/sprint/sprint.route";
+import { TaskRoutes } from "../module/task/task.route";
+import { TimeLogRoutes } from "../module/timeLog/timeLog.route";
+import { ActivityLogRoutes } from "../module/activityLog/activityLog.route";
+import { CommentRoutes } from "../module/comment/comment.route";
 
 const router = Router();
 
 const moduleRoutes = [
   {
-    path: "/surahs",
-    route: SurahRoutes,
+    path: "/auth",
+    route: AuthRoutes,
+  },
+  {
+    path: "/users",
+    route: UserRoutes,
+  },
+  {
+    path: "/tasks",
+    route: TaskRoutes,
+  },
+  {
+    path: "/sprints",
+    route: SprintRoutes,
+  },
+  {
+    path: "/time-logs",
+    route: TimeLogRoutes,
+  },
+
+  {
+    path: "/projects",
+    route: ProjectRoutes,
+  },
+  {
+    path: "/sprints",
+    route: SprintRoutes,
+  },
+  {
+    path: "/activity-logs",
+    route: ActivityLogRoutes,
+  },
+  {
+    path: "/comments",
+    route: CommentRoutes,
   },
 ];
 
