@@ -46,13 +46,13 @@ export default function AuthProvider({
     }
   }, [data, isError, dispatch, token, tokenReady]);
 
-  if (tokenReady && token && isLoading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-[#050816] text-white">
-        Loading...
-      </div>
-    );
-  }
+  // if (tokenReady && token && isLoading) {
+  //   return (
+  //     <div className="flex min-h-screen items-center justify-center bg-[#050816] text-white">
+  //       Loading...
+  //     </div>
+  //   );
+  // }
 
   return children;
 }

@@ -1,40 +1,91 @@
+// components/ui/loading-spinner.tsx
+
 "use client";
 
+import { Spinner } from "@heroui/react";
+
 type Props = {
-  size?: "sm" | "md" | "lg";
   fullScreen?: boolean;
+
   text?: string;
 };
 
-const LoadingSpinner = ({ size = "md", fullScreen = false, text }: Props) => {
-  const sizeClasses = {
-    sm: "h-5 w-5 border-2",
-    md: "h-9 w-9 border-[3px]",
-    lg: "h-16 w-16 border-4",
-  };
+const LoadingSpinner = ({
+  fullScreen = false,
 
-  const spinner = (
-    <div className="flex flex-col items-center gap-3">
+  text = "Loading...",
+}: Props) => {
+  const content = (
+    <div className="flex flex-col items-center gap-5">
+      {/* SPINNER */}
       <div
-        className={`animate-spin rounded-full border-slate-200 border-t-indigo-600 shadow-sm ${sizeClasses[size]}`}
-      />
-      {text && (
-        <p className="text-sm text-slate-500 font-medium animate-pulse">
+        className="
+          flex
+          h-28
+          w-28
+          items-center
+          justify-center
+          rounded-full
+          border
+          border-white/[0.06]
+          bg-[#111113]/90
+          shadow-[0_0_60px_rgba(59,130,246,0.15)]
+          backdrop-blur-xl
+        "
+      >
+        <Spinner
+          size="lg"
+          color="primary"
+        />
+      </div>
+
+      {/* TEXT */}
+      <div className="text-center">
+        <h3 className="text-sm font-medium text-white">
           {text}
+        </h3>
+
+        <p className="mt-1 text-xs text-zinc-500">
+          Please wait a moment
         </p>
-      )}
+      </div>
     </div>
   );
 
+  // FULL SCREEN
   if (fullScreen) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        {spinner}
+      <div
+        className="
+          fixed
+          inset-0
+          z-[99999]
+          flex
+          items-center
+          justify-center
+          bg-black/60
+          backdrop-blur-md
+        "
+      >
+        {content}
       </div>
     );
   }
 
-  return spinner;
+  // NORMAL
+  return (
+    <div
+      className="
+        flex
+        min-h-[300px]
+        w-full
+        items-center
+        justify-center
+      "
+    >
+      {content}
+    </div>
+  );
 };
 
 export default LoadingSpinner;

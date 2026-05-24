@@ -19,9 +19,10 @@ import {
 
 import { RiPulseLine } from "react-icons/ri";
 
- 
 import { sidebarMenus } from "./SidebarMenus";
 import { useCurrentUser } from "@/store/hooks/useCurrentUser.hook";
+import Swal from "sweetalert2";
+import { useLogout } from "@/store/hooks/useAuth";
 
 interface SidebarProps {
   collapsed: boolean;
@@ -42,7 +43,36 @@ export function Sidebar({
 
   const user = useCurrentUser();
 
-  // const { logoutUser } = useLogout();
+  const { logoutUser } = useLogout();
+
+  // LOGOUT FUNCTION
+  const handleLogout = async () => {
+    const result = await Swal.fire({
+      title: "Logout Account?",
+
+      text: "You will need to login again",
+
+      icon: "warning",
+
+      showCancelButton: true,
+
+      confirmButtonText: "Logout",
+
+      confirmButtonColor: "#dc2626",
+
+      cancelButtonColor: "#3f3f46",
+
+      background: "#111113",
+
+      color: "#fff",
+    });
+
+    if (result.isConfirmed) {
+      logoutUser();
+
+      router.replace("/login");
+    }
+  };
 
   // ROLE BASED MENU
   const role = user?.role || "member";
@@ -211,15 +241,12 @@ export function Sidebar({
               )}
             </div>
 
-            {/* LOGOUT */}
+            {/* LOGOUT BUTTON */}
             <button
-              onClick={() => {
-                // logoutUser();
-
-                router.replace("/login");
-              }}
+              onClick={handleLogout}
               className={clsx(
                 "group mt-3 flex h-11 items-center rounded-2xl border border-red-500/10 bg-red-500/5 text-sm font-medium text-red-400 transition-all duration-300 hover:bg-red-500/10 hover:text-red-300",
+
                 collapsed ? "justify-center" : "w-full justify-center gap-2",
               )}
             >
@@ -229,6 +256,8 @@ export function Sidebar({
             </button>
           </div>
         </div>
+
+        
       </motion.aside>
 
       {/* MOBILE MENU BUTTON */}

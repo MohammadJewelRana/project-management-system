@@ -31,6 +31,7 @@ import { useGetAllUsers } from "@/store/hooks/user.hook";
 import { CustomFormField } from "@/components/form/CustomFormField";
 import { MultiSelectField } from "@/components/form/MultiSelectInputField";
 import LoadingSpinner from "@/app/loading";
+import { technologyOptions } from "@/constants/texhnologyOptions";
 
 export default function EditProjectPage() {
   const router = useRouter();
@@ -132,7 +133,7 @@ export default function EditProjectPage() {
   };
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-3 py-4 ">
+    <div className="  w-full  px-3 py-4 ">
       {/* HEADER */}
       <div className="mb-6 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-center sm:justify-between">
         {/* LEFT */}
@@ -358,78 +359,9 @@ export default function EditProjectPage() {
                   control={control}
                   placeholder="Select Technologies"
                   icon={<HiOutlineSparkles />}
-                  options={[
-                    {
-                      label: "React.js",
-                      value: "React.js",
-                    },
-
-                    {
-                      label: "Next.js",
-                      value: "Next.js",
-                    },
-
-                    {
-                      label: "TypeScript",
-                      value: "TypeScript",
-                    },
-
-                    {
-                      label: "Node.js",
-                      value: "Node.js",
-                    },
-
-                    {
-                      label: "Express.js",
-                      value: "Express.js",
-                    },
-
-                    {
-                      label: "NestJS",
-                      value: "NestJS",
-                    },
-
-                    {
-                      label: "MongoDB",
-                      value: "MongoDB",
-                    },
-
-                    {
-                      label: "PostgreSQL",
-                      value: "PostgreSQL",
-                    },
-
-                    {
-                      label: "Tailwind CSS",
-                      value: "Tailwind CSS",
-                    },
-
-                    {
-                      label: "Redux",
-                      value: "Redux",
-                    },
-                  ]}
+                  options={technologyOptions}
                 />
               </div>
-            </div>
-
-            {/* MOBILE BUTTON */}
-            <div className="block sm:hidden">
-              <Button
-                color="primary"
-                type="submit"
-                form="edit-project-form"
-                isLoading={updateLoading}
-                className="
-              h-11
-              w-full
-              rounded-2xl
-              bg-blue-600
-              font-medium
-            "
-              >
-                Save Changes
-              </Button>
             </div>
           </form>
         </>

@@ -52,7 +52,7 @@ export default function MainLayout({
         <Topbar setMobileOpen={setMobileOpen} />
 
         {/* CONTENT */}
-        <main className="flex-1 overflow-y-auto bg-[#09090B] p-3 ">
+        <main className="flex-1 overflow-y-auto bg-[#09090B] p-4 ">
           <div className="mx-auto w-full max-w-[1600px]">{children}</div>
         </main>
       </div>

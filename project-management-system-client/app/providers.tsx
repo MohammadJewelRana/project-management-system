@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import ReduxProvider from "@/store/providers";
 import { Toaster } from "react-hot-toast";
-import AuthProvider from "./providers/AuthProvider";
+import AuthProvider from "../providers/AuthProvider";
 
 export interface ProvidersProps {
   children: React.ReactNode;
