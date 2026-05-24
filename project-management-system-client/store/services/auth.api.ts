@@ -20,7 +20,7 @@ export const authApi = baseApi.injectEndpoints({
       }),
     }),
 
-    // GET ME
+    // GET CURRENT USER
     getMe: builder.query({
       query: () => ({
         url: "/auth/me",
@@ -34,10 +34,4 @@ export const authApi = baseApi.injectEndpoints({
   overrideExisting: true,
 });
 
-export const {
-  useLoginMutation,
-  useRegisterMutation,
-  useGetMeQuery,
-} = authApi;
-
-
+export const { useLoginMutation, useRegisterMutation, useGetMeQuery } = authApi;

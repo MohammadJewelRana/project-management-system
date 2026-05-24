@@ -63,7 +63,7 @@ export function Navbar() {
               }}
             >
               <Link
-                href="/admin/login"
+                href="/login"
                 className="flex h-11 items-center gap-2 rounded-2xl border border-white/[0.08] bg-white/[0.03] px-5 text-sm font-semibold text-white transition-all duration-300 hover:border-white/[0.12] hover:bg-white/[0.05]"
               >
                 <HiOutlineShieldCheck className="text-lg" />
