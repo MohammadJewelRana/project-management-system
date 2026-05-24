@@ -1,7 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { UseFormRegister, UseFormHandleSubmit, FieldErrors } from "react-hook-form";
+import {
+  UseFormRegister,
+  UseFormHandleSubmit,
+  FieldErrors,
+} from "react-hook-form";
 import {
   HiOutlineFolder,
   HiOutlineDocumentText,
@@ -71,7 +75,9 @@ export function ProjectForm({
           </div>
 
           <div>
-            <h2 className="text-lg font-semibold text-white">Create New Project</h2>
+            <h2 className="text-lg font-semibold text-white">
+              Create New Project
+            </h2>
             <p className="text-sm text-zinc-500">
               Fill in the project details based on your backend schema
             </p>

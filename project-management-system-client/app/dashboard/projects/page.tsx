@@ -11,6 +11,8 @@ import {
 
 import { ProjectForm, ProjectFormValues } from "./_components/ProjectForm";
 import { ProjectCard } from "./_components/ProjectCard";
+import { useCreateProject } from "@/store/hooks/project.hook";
+ 
 
 const mockProjects = [
   {
@@ -62,6 +64,7 @@ const mockProjects = [
 
 export default function ProjectsPage() {
   const [showForm, setShowForm] = useState(false);
+  const { create, isLoading } = useCreateProject();
 
   const {
     register,
@@ -70,9 +73,24 @@ export default function ProjectsPage() {
     reset,
   } = useForm<ProjectFormValues>();
 
-  const onSubmit = (data: ProjectFormValues) => {
+  const onSubmit = async (data: ProjectFormValues) => {
+    const start = new Date(data.startDate);
+    const end = new Date(data.endDate);
+
+    if (end <= start) {
+      alert("End date must be greater than start date");
+      return;
+    }
+
     const payload = {
       ...data,
+      budget: data.budget ?? 0,
+      estimatedHours: data.estimatedHours ?? 0,
+      progress: data.progress ?? 0,
+      completedTaskCount: data.completedTaskCount ?? 0,
+      totalTaskCount: data.totalTaskCount ?? 0,
+      isPublic: data.isPublic ?? false,
+      currency: data.currency || "USD",
       tags: data.tags
         ? data.tags.split(",").map((item) => item.trim()).filter(Boolean)
         : [],
@@ -82,17 +100,12 @@ export default function ProjectsPage() {
       members: data.members
         ? data.members.split(",").map((item) => item.trim()).filter(Boolean)
         : [],
-      budget: data.budget ?? 0,
-      estimatedHours: data.estimatedHours ?? 0,
-      progress: data.progress ?? 0,
-      completedTaskCount: data.completedTaskCount ?? 0,
-      totalTaskCount: data.totalTaskCount ?? 0,
-      isPublic: data.isPublic ?? false,
     };
 
-    console.log(payload);
-    reset();
-    setShowForm(false);
+    await create(payload);
+
+    // reset();
+    // setShowForm(false);
   };
 
   return (

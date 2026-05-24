@@ -1,17 +1,11 @@
 "use client";
 
-import { useEffect } from "react";
-
-import Cookies from "js-cookie";
-
+import { useEffect, useState } from "react";
 import { useAppDispatch } from "@/store/reduxHooks";
-
+import { useGetMeQuery } from "@/store/services/auth.api";
+import { logout, setInitialized, setUser } from "@/store/features/authSlice";
+import { tokenManager } from "@/store/hooks/tokenManager";
  
-
-import {
-  useGetMeQuery,
-} from "@/store/services/auth.api";
-import { logout, setUser } from "@/store/features/authSlice";
 
 export default function AuthProvider({
   children,
@@ -19,46 +13,40 @@ export default function AuthProvider({
   children: React.ReactNode;
 }) {
   const dispatch = useAppDispatch();
+  const [tokenReady, setTokenReady] = useState(false);
+  const token = tokenManager.getAccessToken();
 
-  const token =
-    Cookies.get("accessToken");
+  useEffect(() => {
+    setTokenReady(true);
+  }, []);
 
-  const {
-    data,
-    isLoading,
-    isError,
-  } = useGetMeQuery(undefined, {
-    skip: !token,
+  const { data, isLoading, isError } = useGetMeQuery(undefined, {
+    skip: !tokenReady || !token,
   });
 
-  // SET USER
   useEffect(() => {
     if (data?.success) {
       dispatch(
         setUser({
           user: data.data,
           accessToken: token,
-        })
+          refreshToken: tokenManager.getRefreshToken(),
+        }),
       );
+      return;
     }
 
-    // INVALID TOKEN
-    if (isError) {
-      Cookies.remove("accessToken");
+    if (tokenReady && !token) {
+      dispatch(setInitialized());
+    }
 
-      Cookies.remove("role");
-
+    if (isError && token) {
+      tokenManager.clearTokens();
       dispatch(logout());
     }
-  }, [
-    data,
-    isError,
-    dispatch,
-    token,
-  ]);
+  }, [data, isError, dispatch, token, tokenReady]);
 
-  // LOADER
-  if (token && isLoading) {
+  if (tokenReady && token && isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#050816] text-white">
         Loading...

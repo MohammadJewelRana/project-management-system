@@ -30,9 +30,7 @@ const priorityColors: Record<string, string> = {
   urgent: "bg-red-500/15 text-red-400",
 };
 
-export function ProjectCard({
-  project,
-}: ProjectCardProps) {
+export function ProjectCard({ project }: ProjectCardProps) {
   return (
     <motion.div
       whileHover={{
@@ -65,9 +63,7 @@ export function ProjectCard({
               {project.title}
             </h3>
 
-            <p className="mt-1 text-sm text-zinc-500">
-              {project.client}
-            </p>
+            <p className="mt-1 text-sm text-zinc-500">{project.client}</p>
           </div>
         </div>
 
@@ -100,9 +96,7 @@ export function ProjectCard({
       {/* PROGRESS */}
       <div className="relative mt-6">
         <div className="mb-2 flex items-center justify-between">
-          <p className="text-sm text-zinc-400">
-            Progress
-          </p>
+          <p className="text-sm text-zinc-400">Progress</p>
 
           <p className="text-sm font-semibold text-white">
             {project.progress}%
@@ -120,13 +114,10 @@ export function ProjectCard({
 
         <div className="mt-2 flex justify-between text-xs text-zinc-500">
           <span>
-            {project.completedTaskCount}/
-            {project.totalTaskCount} tasks
+            {project.completedTaskCount}/{project.totalTaskCount} tasks
           </span>
 
-          <span>
-            {project.estimatedHours}h est.
-          </span>
+          <span>{project.estimatedHours}h est.</span>
         </div>
       </div>
 
@@ -136,9 +127,7 @@ export function ProjectCard({
         <div className="flex items-center gap-2 text-zinc-500">
           <HiOutlineUsers className="text-lg" />
 
-          <span className="text-sm">
-            {project.members.length} members
-          </span>
+          <span className="text-sm">{project.members.length} members</span>
         </div>
 
         {/* DATE */}
@@ -146,9 +135,9 @@ export function ProjectCard({
           <HiOutlineCalendar className="text-lg" />
 
           <span className="text-sm">
-            {new Date(
-              project.endDate
-            ).toLocaleDateString()}
+            {/* {new Date(project.endDate).toLocaleDateString()}
+             */}
+            16-02-2026
           </span>
         </div>
       </div>

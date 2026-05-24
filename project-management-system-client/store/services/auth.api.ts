@@ -2,7 +2,6 @@ import { baseApi } from "../baseApi";
 
 export const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    // LOGIN
     login: builder.mutation({
       query: (data) => ({
         url: "/auth/login",
@@ -11,7 +10,6 @@ export const authApi = baseApi.injectEndpoints({
       }),
     }),
 
-    // REGISTER
     register: builder.mutation({
       query: (data) => ({
         url: "/users/create-user",
@@ -20,17 +18,14 @@ export const authApi = baseApi.injectEndpoints({
       }),
     }),
 
-    // GET CURRENT USER
     getMe: builder.query({
       query: () => ({
         url: "/auth/me",
         method: "GET",
       }),
-
       providesTags: ["Auth"],
     }),
   }),
-
   overrideExisting: true,
 });
 

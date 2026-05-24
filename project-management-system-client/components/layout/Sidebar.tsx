@@ -19,7 +19,7 @@ import {
 
 import { RiPulseLine } from "react-icons/ri";
 
-import { useLogout } from "@/store/hooks/useAuth";
+ 
 import { sidebarMenus } from "./SidebarMenus";
 import { useCurrentUser } from "@/store/hooks/useCurrentUser.hook";
 
@@ -42,7 +42,7 @@ export function Sidebar({
 
   const user = useCurrentUser();
 
-  const { logoutUser } = useLogout();
+  // const { logoutUser } = useLogout();
 
   // ROLE BASED MENU
   const role = user?.role || "member";
@@ -214,7 +214,7 @@ export function Sidebar({
             {/* LOGOUT */}
             <button
               onClick={() => {
-                logoutUser();
+                // logoutUser();
 
                 router.replace("/login");
               }}
