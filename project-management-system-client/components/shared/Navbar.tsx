@@ -16,18 +16,14 @@ import {
 } from "react-icons/hi";
 
 export function Navbar() {
-  const [mobileOpen, setMobileOpen] =
-    useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
     <>
       <header className="sticky top-0 z-50 border-b border-white/[0.06] bg-[#050816]/70 backdrop-blur-2xl">
         <div className="mx-auto flex h-[76px] max-w-7xl items-center justify-between px-4 sm:px-6">
           {/* LEFT */}
-          <Link
-            href="/"
-            className="flex items-center gap-3"
-          >
+          <Link href="/" className="flex items-center gap-3">
             {/* LOGO */}
             <div className="relative">
               <div className="absolute inset-0 rounded-2xl bg-blue-500/30 blur-xl" />
@@ -71,7 +67,6 @@ export function Navbar() {
                 className="flex h-11 items-center gap-2 rounded-2xl border border-white/[0.08] bg-white/[0.03] px-5 text-sm font-semibold text-white transition-all duration-300 hover:border-white/[0.12] hover:bg-white/[0.05]"
               >
                 <HiOutlineShieldCheck className="text-lg" />
-
                 Admin Login
               </Link>
             </motion.div>
@@ -90,7 +85,6 @@ export function Navbar() {
                 className="flex h-11 items-center gap-2 rounded-2xl bg-gradient-to-r from-blue-500 to-indigo-500 px-5 text-sm font-semibold text-white shadow-[0_0_35px_rgba(59,130,246,0.35)]"
               >
                 <HiOutlineUserGroup className="text-lg" />
-
                 Member Login
               </Link>
             </motion.div>
@@ -98,9 +92,7 @@ export function Navbar() {
 
           {/* MOBILE MENU BUTTON */}
           <button
-            onClick={() =>
-              setMobileOpen(!mobileOpen)
-            }
+            onClick={() => setMobileOpen(!mobileOpen)}
             className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/[0.08] bg-white/[0.03] text-white transition-all duration-300 hover:bg-white/[0.05] md:hidden"
           >
             {mobileOpen ? (
@@ -127,9 +119,7 @@ export function Navbar() {
               exit={{
                 opacity: 0,
               }}
-              onClick={() =>
-                setMobileOpen(false)
-              }
+              onClick={() => setMobileOpen(false)}
               className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm md:hidden"
             />
 
@@ -164,11 +154,10 @@ export function Navbar() {
               <div className="space-y-3">
                 {/* ADMIN */}
                 <Link
-                  href="/admin/login"
+                  href="/auth/login"
                   className="flex h-14 items-center justify-center gap-3 rounded-2xl border border-white/[0.08] bg-white/[0.03] text-sm font-semibold text-white transition-all duration-300 hover:bg-white/[0.05]"
                 >
                   <HiOutlineShieldCheck className="text-xl" />
-
                   Admin Login
                 </Link>
 
@@ -178,7 +167,6 @@ export function Navbar() {
                   className="flex h-14 items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-blue-500 to-indigo-500 text-sm font-semibold text-white shadow-[0_0_35px_rgba(59,130,246,0.35)]"
                 >
                   <HiOutlineUserGroup className="text-xl" />
-
                   Member Login
                 </Link>
               </div>
