@@ -2,15 +2,19 @@
 
 "use client";
 
+import { useState } from "react";
+
 import clsx from "clsx";
 
 import {
   HiOutlineMail,
   HiOutlineOfficeBuilding,
-  HiOutlineDotsVertical,
   HiOutlineBadgeCheck,
 } from "react-icons/hi";
+import { TeamActionDropdown } from "./TeamActionDropDown";
+import { TeamDetailsModal } from "./TeamDetailsModal";
 
+ 
 interface Props {
   title: string;
 
@@ -19,7 +23,18 @@ interface Props {
   badgeColor: string;
 }
 
-export const TeamSection = ({ title, users, badgeColor }: Props) => {
+export const TeamSection = ({
+  title,
+  users,
+  badgeColor,
+}: Props) => {
+  // MODAL
+  const [selectedUser, setSelectedUser] =
+    useState<any>(null);
+
+  const [isOpen, setIsOpen] =
+    useState(false);
+
   // DYNAMIC GRID
   const gridClass =
     users?.length === 1
@@ -51,10 +66,9 @@ export const TeamSection = ({ title, users, badgeColor }: Props) => {
                 text-xl
                 shadow-lg
               `,
-              badgeColor,
+              badgeColor
             )}
           >
-            {/* GLOW */}
             <div className="absolute inset-0 bg-white/[0.03]" />
 
             <HiOutlineBadgeCheck className="relative z-10" />
@@ -67,12 +81,16 @@ export const TeamSection = ({ title, users, badgeColor }: Props) => {
             </h2>
 
             <p className="mt-1 text-sm text-zinc-500">
-              {users?.length} {users?.length > 1 ? "members" : "member"}
+              {users?.length}{" "}
+              {users?.length >
+              1
+                ? "members"
+                : "member"}
             </p>
           </div>
         </div>
 
-        {/* COUNT BADGE */}
+        {/* COUNT */}
         <div
           className="
             hidden
@@ -85,7 +103,9 @@ export const TeamSection = ({ title, users, badgeColor }: Props) => {
             sm:flex
           "
         >
-          <span className="text-sm font-medium text-white">Total:</span>
+          <span className="text-sm font-medium text-white">
+            Total:
+          </span>
 
           <span className="ml-2 text-sm font-bold text-zinc-300">
             {users?.length}
@@ -94,11 +114,17 @@ export const TeamSection = ({ title, users, badgeColor }: Props) => {
       </div>
 
       {/* GRID */}
-      <div className={clsx("grid gap-5", gridClass)}>
-        {users?.map((user: any) => (
-          <div
-            key={user?._id}
-            className="
+      <div
+        className={clsx(
+          "grid gap-5",
+          gridClass
+        )}
+      >
+        {users?.map(
+          (user: any) => (
+            <div
+              key={user?._id}
+              className="
                 group
                 relative
                 overflow-hidden
@@ -113,10 +139,10 @@ export const TeamSection = ({ title, users, badgeColor }: Props) => {
                 hover:border-white/[0.1]
                 hover:shadow-[0_15px_50px_rgba(0,0,0,0.45)]
               "
-          >
-            {/* TOP GLOW */}
-            <div
-              className="
+            >
+              {/* TOP GLOW */}
+              <div
+                className="
                   absolute
                   inset-x-0
                   top-0
@@ -125,15 +151,15 @@ export const TeamSection = ({ title, users, badgeColor }: Props) => {
                   from-blue-500/[0.05]
                   to-transparent
                 "
-            />
+              />
 
-            {/* TOP */}
-            <div className="relative flex items-start justify-between">
-              {/* USER INFO */}
-              <div className="flex items-center gap-4">
-                {/* AVATAR */}
-                <div
-                  className="
+              {/* TOP */}
+              <div className="relative flex items-start justify-between gap-3">
+                {/* USER INFO */}
+                <div className="flex min-w-0 items-center gap-4">
+                  {/* AVATAR */}
+                  <div
+                    className="
                       relative
                       flex
                       h-16
@@ -151,10 +177,10 @@ export const TeamSection = ({ title, users, badgeColor }: Props) => {
                       text-white
                       shadow-[0_0_35px_rgba(59,130,246,0.35)]
                     "
-                >
-                  {/* STATUS */}
-                  <span
-                    className="
+                  >
+                    {/* STATUS */}
+                    <span
+                      className="
                         absolute
                         bottom-1
                         right-1
@@ -165,43 +191,55 @@ export const TeamSection = ({ title, users, badgeColor }: Props) => {
                         border-[#111113]
                         bg-emerald-400
                       "
-                  />
+                    />
 
-                  {user?.name
-                    ?.split(" ")
-                    ?.map((word: string) => word[0])
-                    ?.join("")
-                    ?.slice(0, 2)}
-                </div>
+                    {user?.name
+                      ?.split(" ")
+                      ?.map(
+                        (
+                          word: string
+                        ) =>
+                          word[0]
+                      )
+                      ?.join("")
+                      ?.slice(
+                        0,
+                        2
+                      )}
+                  </div>
 
-                {/* DETAILS */}
-                <div className="min-w-0">
-                  <h3
-                    className="
+                  {/* DETAILS */}
+                  <div className="min-w-0">
+                    <h3
+                      className="
                         truncate
                         text-lg
                         font-semibold
                         text-white
                       "
-                  >
-                    {user?.name}
-                  </h3>
+                    >
+                      {
+                        user?.name
+                      }
+                    </h3>
 
-                  <p
-                    className="
+                    <p
+                      className="
                         mt-1
                         truncate
                         text-sm
                         text-zinc-500
                       "
-                  >
-                    {user?.designation}
-                  </p>
+                    >
+                      {
+                        user?.designation
+                      }
+                    </p>
 
-                  {/* ROLE */}
-                  <div
-                    className={clsx(
-                      `
+                    {/* ROLE */}
+                    <div
+                      className={clsx(
+                        `
                           mt-3
                           inline-flex
                           rounded-full
@@ -212,47 +250,49 @@ export const TeamSection = ({ title, users, badgeColor }: Props) => {
                           capitalize
                           backdrop-blur-md
                         `,
-                      badgeColor,
-                    )}
-                  >
-                    {user?.role}
+                        badgeColor
+                      )}
+                    >
+                      {
+                        user?.role
+                      }
+                    </div>
                   </div>
+                </div>
+
+                {/* ACTION */}
+                <div
+                  className="
+                    opacity-100
+                    transition-all
+                    duration-300
+                    sm:opacity-0
+                    sm:group-hover:opacity-100
+                  "
+                >
+                  <TeamActionDropdown
+                    user={user}
+                    onView={() => {
+                      setSelectedUser(
+                        user
+                      );
+
+                      setIsOpen(
+                        true
+                      );
+                    }}
+                  />
                 </div>
               </div>
 
-              {/* ACTION */}
-              <button
-                className="
-                    flex
-                    h-10
-                    w-10
-                    items-center
-                    justify-center
-                    rounded-2xl
-                    border
-                    border-white/[0.06]
-                    bg-white/[0.03]
-                    text-zinc-500
-                    opacity-0
-                    transition-all
-                    duration-300
-                    hover:bg-white/[0.06]
-                    hover:text-white
-                    group-hover:opacity-100
-                  "
-              >
-                <HiOutlineDotsVertical className="text-lg" />
-              </button>
-            </div>
+              {/* DIVIDER */}
+              <div className="my-5 border-t border-white/[0.06]" />
 
-            {/* DIVIDER */}
-            <div className="my-5 border-t border-white/[0.06]" />
-
-            {/* DETAILS */}
-            <div className="space-y-3">
-              {/* EMAIL */}
-              <div
-                className="
+              {/* DETAILS */}
+              <div className="space-y-3">
+                {/* EMAIL */}
+                <div
+                  className="
                     flex
                     items-center
                     gap-3
@@ -263,32 +303,39 @@ export const TeamSection = ({ title, users, badgeColor }: Props) => {
                     px-4
                     py-3
                   "
-              >
-                <div
-                  className="
+                >
+                  <div
+                    className="
                       flex
                       h-11
                       w-11
+                      shrink-0
                       items-center
                       justify-center
                       rounded-2xl
                       bg-blue-500/10
                       text-blue-400
                     "
-                >
-                  <HiOutlineMail className="text-lg" />
+                  >
+                    <HiOutlineMail className="text-lg" />
+                  </div>
+
+                  <div className="min-w-0">
+                    <p className="text-xs text-zinc-500">
+                      Email
+                    </p>
+
+                    <p className="truncate text-sm text-white">
+                      {
+                        user?.email
+                      }
+                    </p>
+                  </div>
                 </div>
 
-                <div className="min-w-0">
-                  <p className="text-xs text-zinc-500">Email</p>
-
-                  <p className="truncate text-sm text-white">{user?.email}</p>
-                </div>
-              </div>
-
-              {/* DEPARTMENT */}
-              <div
-                className="
+                {/* DEPARTMENT */}
+                <div
+                  className="
                     flex
                     items-center
                     gap-3
@@ -299,32 +346,49 @@ export const TeamSection = ({ title, users, badgeColor }: Props) => {
                     px-4
                     py-3
                   "
-              >
-                <div
-                  className="
+                >
+                  <div
+                    className="
                       flex
                       h-11
                       w-11
+                      shrink-0
                       items-center
                       justify-center
                       rounded-2xl
                       bg-violet-500/10
                       text-violet-400
                     "
-                >
-                  <HiOutlineOfficeBuilding className="text-lg" />
-                </div>
+                  >
+                    <HiOutlineOfficeBuilding className="text-lg" />
+                  </div>
 
-                <div>
-                  <p className="text-xs text-zinc-500">Department</p>
+                  <div className="min-w-0">
+                    <p className="text-xs text-zinc-500">
+                      Department
+                    </p>
 
-                  <p className="text-sm text-white">{user?.department}</p>
+                    <p className="truncate text-sm text-white">
+                      {
+                        user?.department
+                      }
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
+          )
+        )}
       </div>
+
+      {/* DETAILS MODAL */}
+      <TeamDetailsModal
+        isOpen={isOpen}
+        onOpenChange={
+          setIsOpen
+        }
+        user={selectedUser}
+      />
     </section>
   );
 };
