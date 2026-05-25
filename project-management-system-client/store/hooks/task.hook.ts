@@ -38,13 +38,16 @@ export const useGetAllTasks = (filters: any) => {
   const { data, error, isLoading } = useGetAllTasksQuery(filters);
 
   let tasks: any[] = [];
+  let allTasks: any[] = [];
 
   if (data?.success) {
     tasks = data.data;
+    allTasks = data.data?.result;
   }
 
   return {
     tasks,
+    allTasks,
     isLoading,
     isError: !!error,
   };
