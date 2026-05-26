@@ -49,11 +49,16 @@ export default function MainLayout({
       {/* MAIN */}
       <div className="flex flex-1 flex-col overflow-hidden">
         {/* TOPBAR */}
-        <Topbar setMobileOpen={setMobileOpen} />
+        <Topbar
+          mobileOpen={mobileOpen}
+          setMobileOpen={setMobileOpen}
+        />
 
         {/* CONTENT */}
-        <main className="flex-1 overflow-y-auto bg-[#09090B] p-4 ">
-          <div className="mx-auto w-full max-w-[1600px]">{children}</div>
+        <main className="flex-1 overflow-y-auto bg-[#09090B] p-4">
+          <div className="mx-auto w-full max-w-[1600px]">
+            {children}
+          </div>
         </main>
       </div>
     </div>

@@ -81,7 +81,7 @@ export function Navbar() {
               }}
             >
               <Link
-                href="/member/login"
+                href="/login"
                 className="flex h-11 items-center gap-2 rounded-2xl bg-gradient-to-r from-blue-500 to-indigo-500 px-5 text-sm font-semibold text-white shadow-[0_0_35px_rgba(59,130,246,0.35)]"
               >
                 <HiOutlineUserGroup className="text-lg" />

@@ -42,6 +42,7 @@ export function Sidebar({
   const router = useRouter();
 
   const user = useCurrentUser();
+  
 
   const { logoutUser } = useLogout();
 
@@ -76,6 +77,7 @@ export function Sidebar({
 
   // ROLE BASED MENU
   const role = user?.role || "member";
+  // const role = user?.role || "member";
 
   const menuItems = sidebarMenus[role as keyof typeof sidebarMenus] || [];
 
@@ -109,7 +111,14 @@ export function Sidebar({
         )}
       >
         {/* TOP */}
-        <div className="flex h-20 shrink-0 items-center justify-between border-b border-white/[0.06] px-4">
+        <div
+          className={clsx(
+            "shrink-0 border-b border-white/[0.06] px-4 py-4",
+            collapsed
+              ? "flex flex-col items-center gap-3"
+              : "flex h-20 items-center justify-between",
+          )}
+        >
           {/* LOGO */}
           <div
             className={clsx(
@@ -129,13 +138,20 @@ export function Sidebar({
                   MPMS
                 </h1>
 
-                <p className="text-[11px] text-zinc-500">Project Workspace</p>
+                <p className="text-[11px] text-zinc-500">
+                  Project Workspace
+                </p>
               </div>
             )}
           </div>
 
           {/* ACTION */}
-          <div className="flex items-center gap-2">
+          <div
+            className={clsx(
+              "flex items-center gap-2",
+              collapsed && "w-full justify-center",
+            )}
+          >
             {/* DESKTOP COLLAPSE */}
             <button
               onClick={() => setCollapsed(!collapsed)}
@@ -256,15 +272,13 @@ export function Sidebar({
             </button>
           </div>
         </div>
-
-        
       </motion.aside>
 
       {/* MOBILE MENU BUTTON */}
       {!mobileOpen && (
         <button
           onClick={() => setMobileOpen(true)}
-          className="fixed left-4 top-4 z-40 flex h-11 w-11 items-center justify-center rounded-2xl border border-white/[0.06] bg-[#09090B]/90 text-white backdrop-blur-xl transition-all duration-300 hover:bg-[#111111] lg:hidden"
+          className="fixed left-4 top-4 z-[70] flex h-11 w-11 items-center justify-center rounded-2xl border border-white/[0.06] bg-[#09090B]/90 text-white backdrop-blur-xl transition-all duration-300 hover:bg-[#111111] lg:hidden"
         >
           <HiOutlineMenuAlt2 className="text-2xl" />
         </button>

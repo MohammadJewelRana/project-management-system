@@ -9,6 +9,7 @@ import {
   HiOutlineLightningBolt,
 } from "react-icons/hi";
 import SectionContainer from "./SectionContainer";
+import Link from "next/link";
  
 
  
@@ -98,19 +99,28 @@ const  HeroSection=() => {
             }}
             className="mt-10 flex w-full flex-col gap-4 sm:w-auto sm:flex-row"
           >
-            {/* ADMIN */}
-            <button className="group flex h-11 w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-blue-500 to-indigo-500 px-6 text-sm font-semibold text-white shadow-[0_0_40px_rgba(59,130,246,0.35)] transition-all duration-300 hover:scale-[1.03] sm:h-12 sm:w-auto lg:h-14 lg:px-8">
-              Open Admin Workspace
+     {/* ADMIN */}
+<Link
+  href="/login"
+  className="group flex h-11 w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-blue-500 to-indigo-500 px-6 text-sm font-semibold text-white shadow-[0_0_40px_rgba(59,130,246,0.35)] transition-all duration-300 hover:scale-[1.03] sm:h-12 sm:w-auto lg:h-14 lg:px-8"
+>
+  Open Admin Workspace
 
-              <HiOutlineArrowRight className="text-lg transition-transform duration-300 group-hover:translate-x-1" />
-            </button>
+  <HiOutlineArrowRight className="text-lg transition-transform duration-300 group-hover:translate-x-1" />
+</Link>
 
-            {/* MEMBER */}
-            <button className="group flex h-11 w-full items-center justify-center gap-2 rounded-2xl border border-white/[0.08] bg-white/[0.03] px-6 text-sm font-semibold text-white transition-all duration-300 hover:bg-white/[0.05] sm:h-12 sm:w-auto lg:h-14 lg:px-8">
-              Open Team Workspace
+{/* MEMBER */}
+<Link
+  href="/login"
+  className="group flex h-11 w-full items-center justify-center gap-2 rounded-2xl border border-white/[0.08] bg-white/[0.03] px-6 text-sm font-semibold text-white transition-all duration-300 hover:bg-white/[0.05] sm:h-12 sm:w-auto lg:h-14 lg:px-8"
+>
+  Open Team Workspace
 
-              <HiOutlineArrowRight className="text-lg transition-transform duration-300 group-hover:translate-x-1" />
-            </button>
+  <HiOutlineArrowRight className="text-lg transition-transform duration-300 group-hover:translate-x-1" />
+</Link>
+
+
+
           </motion.div>
         </div>
       </SectionContainer>

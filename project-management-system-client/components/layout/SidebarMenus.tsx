@@ -130,22 +130,27 @@ export const sidebarMenus = {
   member: [
     {
       title: "Dashboard",
-      href: "/dashboard",
+      href: "/dashboard/member",
       icon: HiOutlineViewGrid,
     },
     {
       title: "My Projects",
-      href: "/dashboard/my-projects",
+      href: "/dashboard/member/projects",
       icon: HiOutlineFolder,
     },
     {
+      title: "Sprints",
+      href: "/dashboard/member/sprints",
+      icon: HiOutlineLightningBolt,
+    },
+    {
       title: "My Tasks",
-      href: "/dashboard/my-tasks",
+      href: "/dashboard/member/tasks",
       icon: HiOutlineClipboardCheck,
     },
     {
       title: "Time Logs",
-      href: "/dashboard/time-logs",
+      href: "/dashboard/member/time-logs",
       icon: HiOutlineClock,
     },
     {

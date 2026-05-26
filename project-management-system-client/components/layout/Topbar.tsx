@@ -1,11 +1,15 @@
 "use client";
 
 import { useCurrentUser } from "@/store/hooks/useCurrentUser.hook";
-import Image from "next/image";
 
-import { HiOutlineBell, HiOutlineSearch } from "react-icons/hi";
+import { HiOutlineBell, HiOutlineMenuAlt2, HiX } from "react-icons/hi";
 
-export const Topbar = () => {
+interface TopbarProps {
+  mobileOpen: boolean;
+  setMobileOpen: (value: boolean) => void;
+}
+
+export const Topbar = ({ mobileOpen, setMobileOpen }: TopbarProps) => {
   const user = useCurrentUser();
 
   return (
@@ -13,7 +17,7 @@ export const Topbar = () => {
       className="
         sticky
         top-0
-        z-40
+        z-30
         flex
         h-16
         items-center
@@ -29,37 +33,33 @@ export const Topbar = () => {
     >
       {/* LEFT */}
       <div className="flex items-center gap-3 sm:gap-4">
-        {/* SEARCH */}
-        <div
+        {/* MOBILE HAMBURGER */}
+        <button
+          onClick={() => setMobileOpen(!mobileOpen)}
           className="
-            hidden
+            flex
             h-11
+            w-11
             items-center
-            gap-3
+            justify-center
             rounded-2xl
             border
             border-white/[0.06]
             bg-white/[0.03]
-            px-4
-            md:flex
-            md:w-[320px]
+            text-zinc-300
+            transition-all
+            duration-300
+            hover:bg-white/[0.06]
+            hover:text-white
+            lg:hidden
           "
         >
-          <HiOutlineSearch className="text-lg text-zinc-500" />
-
-          <input
-            type="text"
-            placeholder="Search projects, tasks..."
-            className="
-              w-full
-              bg-transparent
-              text-sm
-              text-white
-              outline-none
-              placeholder:text-zinc-500
-            "
-          />
-        </div>
+          {mobileOpen ? (
+            <HiX className="text-2xl" />
+          ) : (
+            <HiOutlineMenuAlt2 className="text-2xl" />
+          )}
+        </button>
       </div>
 
       {/* RIGHT */}
@@ -101,25 +101,29 @@ export const Topbar = () => {
         </button>
 
         {/* USER */}
+        {/* USER */}
         <div
           className="
-            flex
-            items-center
-            gap-3
-            rounded-2xl
-            border
-            border-white/[0.06]
-            bg-white/[0.03]
-            px-3
-            py-2
-          "
+    flex
+    items-center
+    gap-2
+    rounded-2xl
+    border
+    border-white/[0.06]
+    bg-white/[0.03]
+    px-2
+    py-1.5
+    sm:gap-3
+    sm:px-3
+    sm:py-2
+  "
         >
           {/* AVATAR */}
           <div
             className="
               relative
-              h-10
-              w-10
+              h-8
+              w-8
               overflow-hidden
               rounded-2xl
               border
@@ -128,21 +132,21 @@ export const Topbar = () => {
           >
             <div
               className="
-    flex
-    h-full
-    w-full
-    items-center
-    justify-center
-    bg-gradient-to-br
-    from-blue-500
-    via-indigo-500
-    to-violet-500
-    text-sm
-    font-bold
-    uppercase
-    text-white
-    shadow-[0_0_25px_rgba(59,130,246,0.35)]
-  "
+                flex
+                h-full
+                w-full
+                items-center
+                justify-center
+                bg-gradient-to-br
+                from-blue-500
+                via-indigo-500
+                to-violet-500
+                text-sm
+                font-medium
+                uppercase
+                text-white
+                shadow-[0_0_25px_rgba(59,130,246,0.35)]
+              "
             >
               {user?.name
                 ?.split(" ")
