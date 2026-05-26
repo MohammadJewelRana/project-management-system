@@ -15,34 +15,19 @@ export const commentApi = baseApi.injectEndpoints({
         const params = new URLSearchParams();
 
         if (filters?.searchTerm) {
-          params.append(
-            "searchTerm",
-            filters.searchTerm
-          );
+          params.append("searchTerm", filters.searchTerm);
         }
 
-        if (
-          filters?.task &&
-          filters.task !== "all"
-        ) {
+        if (filters?.task && filters.task !== "all") {
           params.append("task", filters.task);
         }
 
-        if (
-          filters?.project &&
-          filters.project !== "all"
-        ) {
+        if (filters?.project && filters.project !== "all") {
           params.append("project", filters.project);
         }
 
-        if (
-          filters?.parentComment &&
-          filters.parentComment !== "all"
-        ) {
-          params.append(
-            "parentComment",
-            filters.parentComment
-          );
+        if (filters?.parentComment && filters.parentComment !== "all") {
+          params.append("parentComment", filters.parentComment);
         }
 
         if (filters?.page) {

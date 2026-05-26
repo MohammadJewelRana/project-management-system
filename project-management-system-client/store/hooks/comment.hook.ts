@@ -10,16 +10,13 @@ import {
 
 // Create Comment
 export const useCreateComment = () => {
-  const [createComment, { isLoading, error }] =
-    useCreateCommentMutation();
+  const [createComment, { isLoading, error }] = useCreateCommentMutation();
 
   const create = async (data: any) => {
     try {
       await createComment(data).unwrap();
 
-      toast.success(
-        "Comment created successfully!"
-      );
+      toast.success("Comment created successfully!");
     } catch (err) {
       toast.error("Failed to create comment!");
       console.error(err);
@@ -34,11 +31,8 @@ export const useCreateComment = () => {
 };
 
 // Get All Comments
-export const useGetAllComments = (
-  filters: any
-) => {
-  const { data, error, isLoading } =
-    useGetAllCommentsQuery(filters);
+export const useGetAllComments = (filters: any) => {
+  const { data, error, isLoading } = useGetAllCommentsQuery(filters);
 
   let comments: any[] = [];
 
@@ -54,24 +48,20 @@ export const useGetAllComments = (
 };
 
 // Get Single Comment
-export const useGetSingleComment = (
-  id: string
-) => {
-  const { data, error, isLoading } =
-    useGetSingleCommentQuery(id, {
-      skip: !id,
-    });
+export const useGetSingleComment = (id: string) => {
+  const { data, error, isLoading } = useGetSingleCommentQuery(id, {
+    skip: !id,
+  });
 
   let comment = null;
 
   if (data?.success) {
     comment = data.data;
   }
+console.log(error);
 
   if (error) {
-    toast.error(
-      "Failed to fetch comment!"
-    );
+    toast.error("Failed to fetch comment!");
   }
 
   return {
@@ -83,26 +73,18 @@ export const useGetSingleComment = (
 
 // Update Comment
 export const useUpdateComment = () => {
-  const [updateComment, { isLoading, error }] =
-    useUpdateCommentMutation();
+  const [updateComment, { isLoading, error }] = useUpdateCommentMutation();
 
-  const update = async (
-    id: string,
-    data: any
-  ) => {
+  const update = async (id: string, data: any) => {
     try {
       await updateComment({
         id,
         data,
       }).unwrap();
 
-      toast.success(
-        "Comment updated successfully!"
-      );
+      toast.success("Comment updated successfully!");
     } catch (err) {
-      toast.error(
-        "Failed to update comment!"
-      );
+      toast.error("Failed to update comment!");
       console.error(err);
     }
   };
@@ -116,20 +98,15 @@ export const useUpdateComment = () => {
 
 // Delete Comment
 export const useDeleteComment = () => {
-  const [deleteComment, { isLoading, error }] =
-    useDeleteCommentMutation();
+  const [deleteComment, { isLoading, error }] = useDeleteCommentMutation();
 
   const remove = async (id: string) => {
     try {
       await deleteComment(id).unwrap();
 
-      toast.success(
-        "Comment deleted successfully!"
-      );
+      toast.success("Comment deleted successfully!");
     } catch (err) {
-      toast.error(
-        "Failed to delete comment!"
-      );
+      toast.error("Failed to delete comment!");
       console.error(err);
     }
   };

@@ -150,7 +150,7 @@ export const sidebarMenus = {
     },
     {
       title: "Time Logs",
-      href: "/dashboard/member/time-logs",
+      href: "/dashboard/time-logs",
       icon: HiOutlineClock,
     },
     {
