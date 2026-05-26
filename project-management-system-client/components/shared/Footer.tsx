@@ -53,14 +53,14 @@ const Footer = () => {
 
             <div className="mt-5 space-y-3">
               <Link
-                href="/admin/login"
+                href="/login"
                 className="block text-zinc-500 transition-all duration-300 hover:text-white"
               >
                 Admin Dashboard
               </Link>
 
               <Link
-                href="/member/login"
+                href="/login"
                 className="block text-zinc-500 transition-all duration-300 hover:text-white"
               >
                 Member Workspace
@@ -114,6 +114,6 @@ const Footer = () => {
       </div>
     </footer>
   );
-}
+};
 
 export default Footer;

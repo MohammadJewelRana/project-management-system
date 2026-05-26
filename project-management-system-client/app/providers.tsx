@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import ReduxProvider from "@/store/providers";
 import { Toaster } from "react-hot-toast";
+import AuthProvider from "../providers/AuthProvider";
 
 export interface ProvidersProps {
   children: React.ReactNode;
@@ -28,14 +29,11 @@ export function Providers({ children, themeProps }: ProvidersProps) {
   return (
     <HeroUIProvider navigate={router.push}>
       <ReduxProvider>
-        <NextThemesProvider {...themeProps}>
-          {children}
-        </NextThemesProvider>
+        <AuthProvider>
+          <NextThemesProvider {...themeProps}>{children}</NextThemesProvider>
+        </AuthProvider>
       </ReduxProvider>
-      <Toaster
-  position="top-right"
-  reverseOrder={false}
-/>
+      <Toaster position="top-right" reverseOrder={false} />
     </HeroUIProvider>
   );
 }

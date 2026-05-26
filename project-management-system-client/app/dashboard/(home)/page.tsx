@@ -1,8 +1,13 @@
 
+"use client";
 
-// app/(mainLayout)/(home)/page.tsx
+import { useCurrentUser } from "@/store/hooks/useCurrentUser.hook";
 
 export default function DashboardPage() {
+    const user = useCurrentUser();
+    console.log("Current User in Dashboard:", user);
+
+
   return (
     <div className="space-y-8">
       {/* Header */}

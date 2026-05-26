@@ -38,22 +38,26 @@ export default function LoginPage() {
   // SUBMIT
   const onSubmit = async (data: LoginSchemaType) => {
     try {
-        console.log("Submitting login form with data:", data);
-        
-    //   const res = await login(data);
+      const res = await login(data);
+      console.log("Login Response:", res);
 
-    //   const role = res?.data?.user?.role;
+      const role = res?.data?.user?.role;
+      console.log("User Role:", role);
 
-    //   // ROLE BASED REDIRECT
-    //   if (role === "admin" || role === "manager") {
-    //     router.push("/admin/dashboard");
-    //   }
+      // SMOOTH DELAY
+      setTimeout(() => {
+        if (role === "admin" || role === "manager" || role === "superAdmin") {
+          router.push("/dashboard");
+        }
 
-    //   if (role === "member") {
-    //     router.push("/member/dashboard");
-    //   }
+        if (role === "member") {
+          router.push("/dashboard");
+        }
+      }, 500);
     } catch (error) {
       console.log(error);
+
+      // FORM DATA REMAIN
     }
   };
 
@@ -162,19 +166,6 @@ export default function LoginPage() {
             Track assigned tasks, update progress, and log work hours.
           </p>
         </div>
-      </div>
-
-      {/* FOOTER */}
-      <div className="mt-8 text-center">
-        <p className="text-sm text-zinc-500">
-          Don&apos;t have an account?{" "}
-          <Link
-            href="/register"
-            className="font-medium text-blue-400 transition hover:text-blue-300"
-          >
-            Create Account
-          </Link>
-        </p>
       </div>
     </AuthCard>
   );

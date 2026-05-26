@@ -13,4 +13,13 @@ export interface IUser {
 export interface IAuthState {
   user: IUser | null;
   accessToken: string | null;
+  refreshToken: string | null;
 }
+
+type RefreshResponse = {
+  success: boolean;
+  data: {
+    accessToken: string;
+    refreshToken: string;
+  };
+};
