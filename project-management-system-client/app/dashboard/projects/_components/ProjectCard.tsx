@@ -155,18 +155,25 @@ export function ProjectCard({ project }: ProjectCardProps) {
             {showActions && (
               <div className="absolute right-0 top-12 z-50 w-52 overflow-hidden rounded-2xl border border-white/[0.06] bg-[#18181B] shadow-2xl">
                 {/* VIEW DETAILS */}
-                <button
-                  onClick={() => {
-                    setShowActions(false);
-
-                    onDetailsOpen();
-                  }}
-                  className="flex w-full items-center gap-3 px-4 py-3 text-sm text-white transition-all hover:bg-white/[0.05]"
+                {/* VIEW DETAILS */}
+                <Link
+                  href={`/dashboard/projects/${project._id}`}
+                  onClick={() => setShowActions(false)}
+                  className="
+    flex
+    items-center
+    gap-3
+    px-4
+    py-3
+    text-sm
+    text-white
+    transition-all
+    hover:bg-white/[0.05]
+  "
                 >
                   <HiOutlineEye className="text-lg" />
                   View Details
-                </button>
-
+                </Link>
                 {/* EDIT */}
                 <Link
                   href={`/dashboard/projects/edit?id=${project?._id}`}

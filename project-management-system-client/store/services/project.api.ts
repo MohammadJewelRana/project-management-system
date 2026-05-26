@@ -48,6 +48,12 @@ export const projectApi = baseApi.injectEndpoints({
       invalidatesTags: ["Project"],
     }),
 
+    getProjectDetails: builder.query({
+      query: (id: string) => `/projects/${id}/details`,
+
+      providesTags: ["Project"],
+    }),
+
     // Update project
     updateProject: builder.mutation({
       query: ({ id, data }) => ({
@@ -99,4 +105,5 @@ export const {
   useDeleteProjectMutation,
   useAddMemberToProjectMutation,
   useRemoveMemberFromProjectMutation,
+  useGetProjectDetailsQuery,
 } = projectApi;

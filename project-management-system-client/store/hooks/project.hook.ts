@@ -4,6 +4,7 @@ import {
   useCreateProjectMutation,
   useDeleteProjectMutation,
   useGetAllProjectsQuery,
+  useGetProjectDetailsQuery,
   useGetSingleProjectQuery,
   useRemoveMemberFromProjectMutation,
   useUpdateProjectMutation,
@@ -66,6 +67,50 @@ export const useGetSingleProject = (id: string) => {
   return {
     project,
     isLoading,
+    isError: !!error,
+  };
+};
+
+export const useGetProjectDetails = (id: string) => {
+  const { data, error, isLoading } = useGetProjectDetailsQuery(id, {
+    skip: !id,
+  });
+
+  let project = null;
+
+  let analytics = null;
+
+  let sprints: any[] = [];
+
+  let tasks: any[] = [];
+
+  let members: any[] = [];
+
+  if (data?.success) {
+    project = data.data?.project;
+
+    analytics = data.data?.analytics;
+
+    sprints = data.data?.sprints || [];
+
+    tasks = data.data?.tasks || [];
+
+    members = data.data?.members || [];
+  }
+
+  return {
+    project,
+
+    analytics,
+
+    sprints,
+
+    tasks,
+
+    members,
+
+    isLoading,
+
     isError: !!error,
   };
 };
