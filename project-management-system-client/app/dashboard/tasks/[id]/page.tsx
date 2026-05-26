@@ -229,7 +229,7 @@ export default function TaskDetailsPage() {
 
             {/* EDIT BUTTON */}
             <Link
-              href={`/dashboard/tasks/edit/${task?._id}`}
+              href={`/dashboard/tasks/edit?id=${task._id}`}
               className="
                 flex
                 h-11

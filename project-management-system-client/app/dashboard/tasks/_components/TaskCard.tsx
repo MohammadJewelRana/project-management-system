@@ -185,7 +185,7 @@ export const TaskCard = ({ task }: Props) => {
 
                 {/* EDIT */}
                 <Link
-                  href={`/dashboard/tasks/edit/${task._id}`}
+                  href={`/dashboard/tasks/edit?id=${task._id}`}
                   onClick={() => setShowActions(false)}
                   className="
                     flex

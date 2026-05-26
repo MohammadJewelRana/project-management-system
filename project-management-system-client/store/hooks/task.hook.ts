@@ -77,17 +77,28 @@ export const useGetSingleTask = (id: string) => {
 };
 
 // Update Task
+// Update Task
 export const useUpdateTask = () => {
   const [updateTask, { isLoading, error }] = useUpdateTaskMutation();
 
   const update = async (id: string, data: any) => {
     try {
-      await updateTask({ id, data }).unwrap();
+      const res = await updateTask({
+        id,
+        data,
+      }).unwrap();
 
-      toast.success("Task updated successfully!");
-    } catch (err) {
-      toast.error("Failed to update task!");
+      if (res?.success) {
+        toast.success("Task updated successfully!");
+      }
+
+      return res;
+    } catch (err: any) {
+      toast.error(err?.data?.message || "Failed to update task!");
+
       console.error(err);
+
+      return null;
     }
   };
 
@@ -97,7 +108,6 @@ export const useUpdateTask = () => {
     error,
   };
 };
-
 // Delete Task
 export const useDeleteTask = () => {
   const [deleteTask, { isLoading, error }] = useDeleteTaskMutation();

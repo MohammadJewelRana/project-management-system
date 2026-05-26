@@ -1,22 +1,15 @@
 "use client";
 
-import {
-  useEffect,
-  useMemo,
-} from "react";
+import { useEffect, useMemo } from "react";
 
-import {
-  useForm,
-} from "react-hook-form";
+import { useForm } from "react-hook-form";
 
 import toast from "react-hot-toast";
 
 interface Props {
   initialData: any;
 
-  onSubmit: (
-    data: any
-  ) => Promise<void>;
+  onSubmit: (data: any) => Promise<void>;
 
   isLoading?: boolean;
 
@@ -57,157 +50,93 @@ export const EditTaskForm = ({
   useEffect(() => {
     if (initialData) {
       reset({
-        title:
-          initialData?.title ||
-          "",
+        title: initialData?.title || "",
 
-        description:
-          initialData?.description ||
-          "",
+        description: initialData?.description || "",
 
-        project:
-          initialData?.project
-            ?._id || "",
+        project: initialData?.project?._id || "",
 
-        sprint:
-          initialData?.sprint
-            ?._id || "",
+        sprint: initialData?.sprint?._id || "",
 
-        assignee:
-          initialData?.assignee
-            ?._id || "",
+        assignee: initialData?.assignee?._id || "",
 
-        priority:
-          initialData?.priority ||
-          "medium",
+        priority: initialData?.priority || "medium",
 
-        status:
-          initialData?.status ||
-          "todo",
+        status: initialData?.status || "todo",
 
-        dueDate:
-          initialData?.dueDate
-            ? new Date(
-                initialData.dueDate
-              )
-                .toISOString()
-                .split("T")[0]
-            : "",
+        dueDate: initialData?.dueDate
+          ? new Date(initialData.dueDate).toISOString().split("T")[0]
+          : "",
 
-        estimatedHours:
-          initialData?.estimatedHours ||
-          0,
+        estimatedHours: initialData?.estimatedHours || 0,
       });
     }
-  }, [
-    initialData,
-
-    reset,
-  ]);
+  }, [initialData, reset]);
 
   /* ======================================================
      WATCH PROJECT
   ====================================================== */
 
-  const selectedProject =
-    watch("project");
+  const selectedProject = watch("project");
 
   /* ======================================================
      FILTER SPRINTS
   ====================================================== */
 
-  const filteredSprints =
-    useMemo(() => {
-      if (!selectedProject) {
-        return sprints;
-      }
+  const filteredSprints = useMemo(() => {
+    if (!selectedProject) {
+      return sprints;
+    }
 
-      return (
-        sprints?.filter(
-          (sprint: any) =>
-            sprint?.project
-              ?._id ===
-              selectedProject ||
-            sprint?.project ===
-              selectedProject
-        ) || []
-      );
-    }, [
-      selectedProject,
-
-      sprints,
-    ]);
+    return (
+      sprints?.filter(
+        (sprint: any) =>
+          sprint?.project?._id === selectedProject ||
+          sprint?.project === selectedProject,
+      ) || []
+    );
+  }, [selectedProject, sprints]);
 
   /* ======================================================
      FILTER MEMBERS
   ====================================================== */
 
-  const memberUsers =
-    useMemo(() => {
-      return (
-        users?.filter(
-          (user: any) =>
-            user?.role ===
-            "member"
-        ) || []
-      );
-    }, [users]);
+  const memberUsers = useMemo(() => {
+    return users?.filter((user: any) => user?.role === "member") || [];
+  }, [users]);
 
   /* ======================================================
      SUBMIT
   ====================================================== */
 
-  const handleUpdate =
-    async (data: any) => {
-      try {
-        const payload = {
-          ...data,
+  const handleUpdate = async (data: any) => {
+    try {
+      const payload = {
+        ...data,
 
-          assignee:
-            data.assignee ||
-            undefined,
+        assignee: data.assignee || undefined,
 
-          sprint:
-            data.sprint ||
-            undefined,
+        sprint: data.sprint || undefined,
 
-          estimatedHours:
-            Number(
-              data.estimatedHours
-            ) || 0,
-        };
+        estimatedHours: Number(data.estimatedHours) || 0,
+      };
 
-        await onSubmit(
-          payload
-        );
+      await onSubmit(payload);
+    } catch (error) {
+      console.error(error);
 
-        toast.success(
-          "Task updated successfully!"
-        );
-      } catch (error) {
-        console.error(error);
-
-        toast.error(
-          "Failed to update task!"
-        );
-      }
-    };
+      toast.error("Failed to update task!");
+    }
+  };
 
   return (
-    <form
-      onSubmit={handleSubmit(
-        handleUpdate
-      )}
-    >
+    <form onSubmit={handleSubmit(handleUpdate)}>
       {/* HEADER */}
       <div className="border-b border-white/[0.06] p-6">
-        <h2 className="text-2xl font-bold text-white">
-          Edit Task
-        </h2>
+        <h2 className="text-2xl font-bold text-white">Edit Task</h2>
 
         <p className="mt-2 text-sm text-zinc-500">
-          Update task workflow and
-          information
+          Update task workflow and information
         </p>
       </div>
 
@@ -215,9 +144,7 @@ export const EditTaskForm = ({
       <div className="grid gap-5 p-6 md:grid-cols-2">
         {/* TITLE */}
         <div className="md:col-span-2">
-          <label className="mb-2 block text-sm text-zinc-400">
-            Task Title
-          </label>
+          <label className="mb-2 block text-sm text-zinc-400">Task Title</label>
 
           <input
             {...register("title")}
@@ -244,9 +171,7 @@ export const EditTaskForm = ({
 
           <textarea
             rows={5}
-            {...register(
-              "description"
-            )}
+            {...register("description")}
             placeholder="Task description..."
             className="
               w-full
@@ -263,9 +188,7 @@ export const EditTaskForm = ({
 
         {/* PROJECT */}
         <div>
-          <label className="mb-2 block text-sm text-zinc-400">
-            Project
-          </label>
+          <label className="mb-2 block text-sm text-zinc-400">Project</label>
 
           <select
             {...register("project")}
@@ -281,30 +204,19 @@ export const EditTaskForm = ({
               outline-none
             "
           >
-            <option value="">
-              Select Project
-            </option>
+            <option value="">Select Project</option>
 
-            {projects?.map(
-              (project: any) => (
-                <option
-                  key={project._id}
-                  value={
-                    project._id
-                  }
-                >
-                  {project.title}
-                </option>
-              )
-            )}
+            {projects?.map((project: any) => (
+              <option key={project._id} value={project._id}>
+                {project.title}
+              </option>
+            ))}
           </select>
         </div>
 
         {/* SPRINT */}
         <div>
-          <label className="mb-2 block text-sm text-zinc-400">
-            Sprint
-          </label>
+          <label className="mb-2 block text-sm text-zinc-400">Sprint</label>
 
           <select
             {...register("sprint")}
@@ -320,35 +232,22 @@ export const EditTaskForm = ({
               outline-none
             "
           >
-            <option value="">
-              Select Sprint
-            </option>
+            <option value="">Select Sprint</option>
 
-            {filteredSprints?.map(
-              (sprint: any) => (
-                <option
-                  key={sprint._id}
-                  value={
-                    sprint._id
-                  }
-                >
-                  {sprint.name}
-                </option>
-              )
-            )}
+            {filteredSprints?.map((sprint: any) => (
+              <option key={sprint._id} value={sprint._id}>
+                {sprint.name}
+              </option>
+            ))}
           </select>
         </div>
 
         {/* ASSIGNEE */}
         <div>
-          <label className="mb-2 block text-sm text-zinc-400">
-            Assignee
-          </label>
+          <label className="mb-2 block text-sm text-zinc-400">Assignee</label>
 
           <select
-            {...register(
-              "assignee"
-            )}
+            {...register("assignee")}
             className="
               h-12
               w-full
@@ -361,35 +260,22 @@ export const EditTaskForm = ({
               outline-none
             "
           >
-            <option value="">
-              Select Assignee
-            </option>
+            <option value="">Select Assignee</option>
 
-            {memberUsers?.map(
-              (user: any) => (
-                <option
-                  key={user._id}
-                  value={
-                    user._id
-                  }
-                >
-                  {user.name}
-                </option>
-              )
-            )}
+            {memberUsers?.map((user: any) => (
+              <option key={user._id} value={user._id}>
+                {user.name}
+              </option>
+            ))}
           </select>
         </div>
 
         {/* PRIORITY */}
         <div>
-          <label className="mb-2 block text-sm text-zinc-400">
-            Priority
-          </label>
+          <label className="mb-2 block text-sm text-zinc-400">Priority</label>
 
           <select
-            {...register(
-              "priority"
-            )}
+            {...register("priority")}
             className="
               h-12
               w-full
@@ -402,29 +288,19 @@ export const EditTaskForm = ({
               outline-none
             "
           >
-            <option value="low">
-              Low
-            </option>
+            <option value="low">Low</option>
 
-            <option value="medium">
-              Medium
-            </option>
+            <option value="medium">Medium</option>
 
-            <option value="high">
-              High
-            </option>
+            <option value="high">High</option>
 
-            <option value="urgent">
-              Urgent
-            </option>
+            <option value="urgent">Urgent</option>
           </select>
         </div>
 
         {/* STATUS */}
         <div>
-          <label className="mb-2 block text-sm text-zinc-400">
-            Status
-          </label>
+          <label className="mb-2 block text-sm text-zinc-400">Status</label>
 
           <select
             {...register("status")}
@@ -440,25 +316,15 @@ export const EditTaskForm = ({
               outline-none
             "
           >
-            <option value="todo">
-              Todo
-            </option>
+            <option value="todo">Todo</option>
 
-            <option value="in-progress">
-              In Progress
-            </option>
+            <option value="in-progress">In Progress</option>
 
-            <option value="review">
-              Review
-            </option>
+            <option value="review">Review</option>
 
-            <option value="done">
-              Done
-            </option>
+            <option value="done">Done</option>
 
-            <option value="blocked">
-              Blocked
-            </option>
+            <option value="blocked">Blocked</option>
           </select>
         </div>
 
@@ -470,9 +336,7 @@ export const EditTaskForm = ({
 
           <input
             type="number"
-            {...register(
-              "estimatedHours"
-            )}
+            {...register("estimatedHours")}
             placeholder="10"
             className="
               h-12
@@ -490,15 +354,11 @@ export const EditTaskForm = ({
 
         {/* DUE DATE */}
         <div>
-          <label className="mb-2 block text-sm text-zinc-400">
-            Due Date
-          </label>
+          <label className="mb-2 block text-sm text-zinc-400">Due Date</label>
 
           <input
             type="date"
-            {...register(
-              "dueDate"
-            )}
+            {...register("dueDate")}
             className="
               h-12
               w-full
@@ -540,9 +400,7 @@ export const EditTaskForm = ({
             disabled:opacity-50
           "
         >
-          {isLoading
-            ? "Updating..."
-            : "Update Task"}
+          {isLoading ? "Updating..." : "Update Task"}
         </button>
       </div>
     </form>
