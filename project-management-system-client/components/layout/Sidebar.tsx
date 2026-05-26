@@ -217,7 +217,7 @@ export function Sidebar({
 
                       {item.badge && (
                         <div className="flex h-6 min-w-[24px] items-center justify-center rounded-full bg-white/[0.06] px-2 text-xs font-semibold text-zinc-300">
-                          {item.badge}
+                          {item?.badge}
                         </div>
                       )}
                     </>

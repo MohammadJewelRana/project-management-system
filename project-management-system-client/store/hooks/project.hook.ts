@@ -196,7 +196,7 @@ export const useGetMyProjects = () => {
   const myProjects = data?.data || [];
 
   // DEBUG
-  console.log("My Projects Response:", data);
+  // console.log("My Projects Response:", data);
 
   // ERROR DEBUG
   if (error) {

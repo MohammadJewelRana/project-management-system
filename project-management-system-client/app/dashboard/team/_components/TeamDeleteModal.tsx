@@ -53,7 +53,7 @@ export const TeamDeleteModal =
 
           onOpenChange(false);
         } catch (error) {
-          console.log(error);
+          // console.log(error);
 
           toast.error(
             "Failed to delete user"

@@ -88,7 +88,7 @@ export default function TasksPage() {
     page: 1,
     limit: 100,
   });
-  console.log(allTasks);
+  // console.log(allTasks);
 
   /* ======================================================
      CREATE TASK

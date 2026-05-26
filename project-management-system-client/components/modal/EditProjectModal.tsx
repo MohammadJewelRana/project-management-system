@@ -143,7 +143,7 @@ export const EditProjectModal = ({
     } catch (error) {
       toast.error("Failed to update project");
 
-      console.log(error);
+      // console.log(error);
     }
   };
 
