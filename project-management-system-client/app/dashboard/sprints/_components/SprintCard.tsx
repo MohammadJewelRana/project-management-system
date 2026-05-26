@@ -100,7 +100,7 @@ export const SprintCard = ({ sprint }: Props) => {
       } catch (error) {
         toast.error("Failed to delete sprint");
 
-        console.log(error);
+        // console.log(error);
       }
     }
   };

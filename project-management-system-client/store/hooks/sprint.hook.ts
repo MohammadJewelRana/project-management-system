@@ -210,8 +210,8 @@ export const useGetMySprints = () => {
   } = useGetMySprintsQuery(undefined);
 
   const mySprints = data?.data || [];
-  console.log(data);
-  console.log(error);
+  // console.log(data);
+  // console.log(error);
 
   return {
     mySprints,

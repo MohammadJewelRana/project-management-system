@@ -51,7 +51,7 @@ export const TeamMemberForm = () => {
 
       reset();
     } catch (error: any) {
-      console.log(error);
+      // console.log(error);
 
       toast.error(error?.data?.message || "Failed to create member");
     }

@@ -111,7 +111,7 @@ const page = () => {
 
       router.push("/dashboard/sprints");
     } catch (error) {
-      console.log(error);
+      // console.log(error);
 
       toast.error("Failed to update sprint");
     }

@@ -21,7 +21,7 @@ export default function MainLayout({
 
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  console.log("Current User in MainLayout:", user);
+  // console.log("Current User in MainLayout:", user);
 
   // LOADING WHILE USER RESTORE
   // if (!user) {

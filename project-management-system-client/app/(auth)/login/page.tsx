@@ -39,10 +39,10 @@ export default function LoginPage() {
   const onSubmit = async (data: LoginSchemaType) => {
     try {
       const res = await login(data);
-      console.log("Login Response:", res);
+      // console.log("Login Response:", res);
 
       const role = res?.data?.user?.role;
-      console.log("User Role:", role);
+      // console.log("User Role:", role);
 
       // SMOOTH DELAY
       setTimeout(() => {
@@ -55,7 +55,7 @@ export default function LoginPage() {
         }
       }, 500);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
 
       // FORM DATA REMAIN
     }
