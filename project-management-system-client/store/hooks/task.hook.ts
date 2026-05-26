@@ -6,6 +6,7 @@ import {
   useCreateTaskMutation,
   useDeleteTaskMutation,
   useGetAllTasksQuery,
+  useGetMyTasksQuery,
   useGetSingleTaskQuery,
   useRemoveMemberFromTaskMutation,
   useUpdateTaskMutation,
@@ -202,5 +203,25 @@ export const useRemoveMemberFromTask = () => {
     remove,
     isLoading,
     error,
+  };
+};
+
+
+export const useGetMyTasks = () => {
+  const {
+    data,
+    error,
+    isLoading,
+    refetch,
+  } = useGetMyTasksQuery(undefined);
+
+  const myTasks = data?.data || [];
+
+  return {
+    myTasks,
+    isLoading,
+    isError: !!error,
+    error,
+    refetch,
   };
 };

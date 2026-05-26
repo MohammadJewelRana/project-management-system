@@ -1,64 +1,62 @@
-// ======================================================
-// app/dashboard/member/projects/[id]/page.tsx
-// ======================================================
-
 "use client";
 
+import { useEffect } from "react";
+
 import { useParams } from "next/navigation";
+
+import toast from "react-hot-toast";
 
 import LoadingSpinner from "@/app/loading";
 
 import { useGetProjectDetails } from "@/store/hooks/project.hook";
 
-import { MemberProjectHero } from "./_components/MemberProjectHero";
+import { ProjectMembers } from "../_components/ProjectMember";
+import { ProjectSprintList } from "../_components/ProjectSprintList";
+import { ProjectRecentTasks } from "../_components/ProjectRecentTasks";
+import { MemberProjectHero } from "../_components/MemberProjectHero";
 
-import { MemberSprintAccordion } from "./_components/MemberSprintAccordion";
-
-import { MemberProjectTaskOverview } from "./_components/MemberProjectTaskOverview";
-
-import { MemberProjectMembers } from "./_components/MemberProjectMembers";
-
-export default function MemberProjectDetailsPage() {
+export default function ProjectDetailsPage() {
   const params = useParams();
 
   const id = params?.id as string;
 
-  const {
-    project,
-    analytics,
-    sprints,
-    tasks,
-    members,
-    isLoading,
-  } = useGetProjectDetails(id);
+  const { project, analytics, sprints, tasks, members, isLoading, isError } =
+    useGetProjectDetails(id);
+
+  useEffect(() => {
+    if (isError) {
+      toast.error("Failed to fetch project details!");
+    }
+  }, [isError]);
 
   if (isLoading) {
     return <LoadingSpinner />;
   }
 
+  if (!project) {
+    return (
+      <div className="flex min-h-[400px] items-center justify-center">
+        <h2 className="text-xl font-bold text-white">Project not found</h2>
+      </div>
+    );
+  }
+  const totalProjects = 1;
+
+  const activeProjects = project?.status === "active" ? 1 : 0;
+
+  const completedProjects = project?.status === "completed" ? 1 : 0;
+
+  const totalTasks = analytics?.totalTasks || 0;
   return (
     <div className="space-y-8">
-      {/* HERO */}
-      <MemberProjectHero
-        project={project}
-        analytics={analytics}
-      />
+   <MemberProjectHero project={project} analytics={analytics} />
+      {/* <ProjectHero project={project} analytics={analytics} /> */}
 
-      {/* SPRINTS */}
-      <MemberSprintAccordion
-        sprints={sprints || []}
-        tasks={tasks || []}
-      />
+      <ProjectMembers members={members} />
 
-      {/* TASKS */}
-      <MemberProjectTaskOverview
-        tasks={tasks || []}
-      />
+      <ProjectSprintList sprints={sprints} />
 
-      {/* MEMBERS */}
-      <MemberProjectMembers
-        members={members || []}
-      />
+      <ProjectRecentTasks tasks={tasks} />
     </div>
   );
 }

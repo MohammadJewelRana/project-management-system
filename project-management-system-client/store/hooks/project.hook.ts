@@ -4,6 +4,7 @@ import {
   useCreateProjectMutation,
   useDeleteProjectMutation,
   useGetAllProjectsQuery,
+  useGetMyProjectsQuery,
   useGetProjectDetailsQuery,
   useGetSingleProjectQuery,
   useRemoveMemberFromProjectMutation,
@@ -185,4 +186,28 @@ export const useRemoveMemberFromProject = () => {
   };
 
   return { remove, isLoading, error };
+};
+
+// Get My Projects
+export const useGetMyProjects = () => {
+  const { data, error, isLoading, refetch } = useGetMyProjectsQuery(undefined);
+
+  // PROJECTS
+  const myProjects = data?.data || [];
+
+  // DEBUG
+  console.log("My Projects Response:", data);
+
+  // ERROR DEBUG
+  if (error) {
+    console.log("My Projects Error:", error);
+  }
+
+  return {
+    myProjects,
+    isLoading,
+    isError: !!error,
+    error,
+    refetch,
+  };
 };

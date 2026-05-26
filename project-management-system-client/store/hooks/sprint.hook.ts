@@ -6,6 +6,7 @@ import {
   useCreateSprintMutation,
   useDeleteSprintMutation,
   useGetAllSprintsQuery,
+  useGetMySprintsQuery,
   useGetSingleSprintQuery,
   useRemoveTaskFromSprintMutation,
   useUpdateSprintMutation,
@@ -196,5 +197,27 @@ export const useRemoveTaskFromSprint = () => {
     remove,
     isLoading,
     error,
+  };
+};
+
+
+export const useGetMySprints = () => {
+  const {
+    data,
+    error,
+    isLoading,
+    refetch,
+  } = useGetMySprintsQuery(undefined);
+
+  const mySprints = data?.data || [];
+  console.log(data);
+  console.log(error);
+
+  return {
+    mySprints,
+    isLoading,
+    isError: !!error,
+    error,
+    refetch,
   };
 };

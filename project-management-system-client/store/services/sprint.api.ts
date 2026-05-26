@@ -48,6 +48,16 @@ export const sprintApi = baseApi.injectEndpoints({
       providesTags: ["Sprint"],
     }),
 
+        getMySprints: builder.query({
+      query: () => ({
+        url: "/sprints/my-sprints",
+        method: "GET",
+      }),
+
+      providesTags: ["Sprint"],
+    }),
+
+
     // Get single sprint
     getSingleSprint: builder.query({
       query: (id: string) => `/sprints/${id}`,
@@ -132,4 +142,5 @@ export const {
   useChangeSprintStatusMutation,
   useAddTaskToSprintMutation,
   useRemoveTaskFromSprintMutation,
+  useGetMySprintsQuery,
 } = sprintApi;

@@ -83,6 +83,16 @@ export const projectApi = baseApi.injectEndpoints({
       invalidatesTags: ["Project"],
     }),
 
+        getMyProjects: builder.query({
+      query: () => ({
+        url: "/projects/my-projects",
+        method: "GET",
+      }),
+
+      providesTags: ["Project"],
+    }),
+
+
     // Remove member from project
     removeMemberFromProject: builder.mutation({
       query: ({ id, memberId }) => ({
@@ -106,4 +116,5 @@ export const {
   useAddMemberToProjectMutation,
   useRemoveMemberFromProjectMutation,
   useGetProjectDetailsQuery,
+  useGetMyProjectsQuery,
 } = projectApi;

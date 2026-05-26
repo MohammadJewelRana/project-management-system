@@ -20,42 +20,24 @@ export const taskApi = baseApi.injectEndpoints({
           params.append("searchTerm", filters.searchTerm);
         }
 
-        if (
-          filters?.status &&
-          filters.status !== "all"
-        ) {
+        if (filters?.status && filters.status !== "all") {
           params.append("status", filters.status);
         }
 
-        if (
-          filters?.priority &&
-          filters.priority !== "all"
-        ) {
+        if (filters?.priority && filters.priority !== "all") {
           params.append("priority", filters.priority);
         }
 
-        if (
-          filters?.project &&
-          filters.project !== "all"
-        ) {
+        if (filters?.project && filters.project !== "all") {
           params.append("project", filters.project);
         }
 
-        if (
-          filters?.sprint &&
-          filters.sprint !== "all"
-        ) {
+        if (filters?.sprint && filters.sprint !== "all") {
           params.append("sprint", filters.sprint);
         }
 
-        if (
-          filters?.assignedTo &&
-          filters.assignedTo !== "all"
-        ) {
-          params.append(
-            "assignedTo",
-            filters.assignedTo
-          );
+        if (filters?.assignedTo && filters.assignedTo !== "all") {
+          params.append("assignedTo", filters.assignedTo);
         }
 
         if (filters?.page) {
@@ -78,6 +60,15 @@ export const taskApi = baseApi.injectEndpoints({
     // Get single task
     getSingleTask: builder.query({
       query: (id: string) => `/tasks/${id}`,
+      providesTags: ["Task"],
+    }),
+
+    getMyTasks: builder.query({
+      query: () => ({
+        url: "/tasks/my-tasks",
+        method: "GET",
+      }),
+
       providesTags: ["Task"],
     }),
 
@@ -158,4 +149,5 @@ export const {
   useChangeTaskStatusMutation,
   useAssignMemberToTaskMutation,
   useRemoveMemberFromTaskMutation,
+  useGetMyTasksQuery,
 } = taskApi;
